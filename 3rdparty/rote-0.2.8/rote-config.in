@@ -1,0 +1,33 @@
+#!/bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+version=@PACKAGE_VERSION@
+
+if test $# -eq 0; then
+   echo "Usage: rote-config [--cflags] [--libs]"
+   echo "       rote-config --version"
+   echo
+fi
+
+while test $# -gt 0; do
+   case $1 in
+      --cflags)
+         echo "-I$includedir"
+         ;;
+      --libs)
+         echo "-L$libdir -lrote"
+         ;;
+      --version)
+         echo "ROTE version $version"
+         echo "Our Own Terminal Emulation Library"
+         echo
+         echo "Copyright (c) 2004 Bruno T. C. de Oliveira"
+         echo "All rights reserved"
+         ;;
+   esac
+   shift
+done
+
