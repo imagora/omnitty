@@ -2,15 +2,15 @@ headers=$(wildcard *.h)
 sources=$(wildcard *.c)
 objects=$(patsubst %.c,%.o,$(sources))
 
-CC=@CC@
-CFLAGS=@CFLAGS@ -Wall
-LIBS=@LIBS@
-LDFLAGS=@LDFLAGS@
-OMNITTY_VERSION=@PACKAGE_VERSION@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
-mandir=@mandir@
+CC=gcc
+CFLAGS=-g -O2 -I/usr/local/include -Wall
+LIBS= -L/usr/local/lib -lrote -lncurses
+LDFLAGS=
+OMNITTY_VERSION=0.3.0
+prefix=/usr/local
+exec_prefix=${prefix}
+bindir=${exec_prefix}/bin
+mandir=${prefix}/man
 
 CFLAGS+=-DOMNITTY_VERSION=\"$(OMNITTY_VERSION)\"
 
