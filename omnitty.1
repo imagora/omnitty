@@ -1,0 +1,98 @@
+.TH omnitty "1" "August 2004" "Omnitty SSH multiplexer"
+
+.SH NAME
+omnitty \- A tool to ssh into several machines simultaneously
+
+.SH SYNOPSIS
+.B omnitty [-W list_width] [-T term_width]
+.SH DESCRIPTION
+.PP
+Omnitty is a curses-based program that allows one to log into several
+machines simultaneously and interact with them, selectively directing
+input to individual machines or groups of selected machines. You can run both
+line-oriented and screen oriented in the target machines, because Omnitty
+has built-in terminal emulation capability. When the terminal is large
+enough, Omnitty also displays a "summary area" for each machine,
+in which it shows what the latest output from the machine was.
+
+.SH OPTIONS
+.TP
+\fB-W\fR
+specifies the width of the list window, if the default is not
+satisfactory. For example, if your machines have exceptionally long
+names, you might have to use this parameter to configure the desired
+width of the list window.
+
+.TP
+\fB-T\fR
+specifies the width of the terminal window, if the default is not
+satisfactory. For example, if you use omnitty in any X terminal with a 
+small font you can increase the with to see longer lines without 
+wrapping. The default is to give you an 80 column terminal and leave
+the remaining width for the summary area. 
+
+.SH PROJECT HOME PAGE
+The Omnitty Project's official homepage is the following:
+	
+
+	\fBhttp://omnitty.sourceforge.net\fR
+
+There you will find author information, FAQ, links to the latest
+version of the program, etc.
+
+.SH AUTHOR
+This program was written by Bruno T. C. de Oliveira, a computer-science
+student at Universidade de São Paulo, Brazil. My e-mail address is:
+
+	\fBbtco@linux.ime.usp.br   or   brunotc@gmail.com\fR
+
+.SH ENVIRONMENT VARIABLES
+
+When you specify '@foo' as a machine name when adding, the default program
+behavior is to read a file named 'foo' in the current directory and add
+all the machines listed there (one per line). If however you set the 
+OMNITTY_AT_COMMAND environment variable, omnitty will, instead of trying
+to open a file named 'foo', execute the command OMNITTY_AT_COMMAND supplying
+it the argument 'foo'. The output of this command will be interpreted as a list
+of machines to add (one per line).
+
+.SH MORE DETAILS
+Multiple-host network administration usually involves running the same
+set of commands on several different machines. An administrator might
+ssh into each of the machines in his network individually to perform
+the required tasks, but the process soon becomes repetitive and
+prone to errors. Scripts might help in the case of noninteractive
+programs and when the administrator knows exactly what commands are
+to be given. Error handling in these scripts is also difficult to
+code, and the process becomes especially tedious if these tasks
+have to be done regularly.
+
+Omnitty tries to present a different approach to manipulating several
+machines remotely. It simultaneously logs you into all the machines you
+specify and then presents a screen in which you navigate through
+the list of machines. When you select a machine, its "terminal" is shown
+onscreen and they keypresses you type are sent to that machine while
+it is selected. The user may freely navigate the list, interacting
+with the machines in any order.
+
+Another feature is that you can 'tag' machines on the list and enter
+a mode where the input you provide is directed to ALL the machines
+you tagged, simultaneously. Thus you might tag all the machines in
+which you need to run a particular command and then type the command
+once to have all machines execute it.
+
+Omnitty not only works with regular commands, but also with visual
+programs. For example, you might run 'vi' remotely on several machines
+simultaneously, and every keystroke you supply will be reproduced
+in every machine you tagged. Thus you might interactively edit
+files in several machines at once.
+
+
+.SH LICENSE INFORMATION
+Copyright (c) 2004 Bruno Takahashi C. de Oliveira. All rights reserved.
+
+This program is licensed under the GNU General Public License,
+version 2 or, at your option, any later version. For full license
+information, please refer to the COPYING file that accompanies
+the program.
+

@@ -1,0 +1,8 @@
+FEATURES:
+
+- window resizing should work, that is, resize the terminals and such
+
+- allow more than one line of summary per machine if user wants that.
+  (suggested by László Molnár - laszlo.molnar@ericsson.com, 2004-10-27)
+
+
