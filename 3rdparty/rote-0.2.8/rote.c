@@ -22,7 +22,7 @@ Copyright (c) 2004 Bruno T. C. de Oliveira
 #include "rote.h"
 #include "roteprivate.h"
 #include <stdlib.h>
-#include <pty.h>
+#include <util.h>
 #include <stdio.h>
 #include <string.h>
 

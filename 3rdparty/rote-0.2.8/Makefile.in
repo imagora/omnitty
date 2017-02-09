@@ -23,29 +23,29 @@ HEADERS=$(wildcard *.h)
 
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
-ROTE_VERSION=@PACKAGE_VERSION@
-ROTE_SONAME=librote.so.0
+ROTE_VERSION=0.2.8
+ROTE_SONAME=librote.0.dylib
 
-CC=@CC@
-CFLAGS=@CFLAGS@ -Wall -fPIC
-LIBS=@LIBS@
-LDFLAGS=@LDFLAGS@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
-bindir=@bindir@
+CC=gcc
+CFLAGS=-g -O2 -Wall -fPIC
+LIBS=-lutil -lncurses 
+LDFLAGS=
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+bindir=${exec_prefix}/bin
 
-all: librote.so.$(ROTE_VERSION)
+all: librote.$(ROTE_VERSION).dylib
 
 install: all
 	mkdir -p $(DESTDIR)$(includedir)/rote
 	rm -f $(DESTDIR)$(includedir)/rote/*.h
 	cp rote.h $(DESTDIR)$(includedir)/rote
 	mkdir -p $(DESTDIR)$(libdir)
-	cp librote.so.$(ROTE_VERSION) $(DESTDIR)$(libdir)
-	cd $(DESTDIR)$(libdir) && ln -sf librote.so.$(ROTE_VERSION) librote.so
-	cd $(DESTDIR)$(libdir) && ln -sf librote.so.$(ROTE_VERSION) $(ROTE_SONAME)
+	cp librote.$(ROTE_VERSION).dylib $(DESTDIR)$(libdir)
+	cd $(DESTDIR)$(libdir) && ln -sf librote.$(ROTE_VERSION).dylib librote.dylib
+	cd $(DESTDIR)$(libdir) && ln -sf librote.$(ROTE_VERSION).dylib $(ROTE_SONAME)
 	chmod 755 rote-config
 	mkdir -p $(DESTDIR)$(bindir)
 	cp -p rote-config $(DESTDIR)$(bindir)
@@ -61,8 +61,8 @@ install: all
 	@echo "program (make sure $(DESTDIR)$(bindir) is in your path)."
 	@echo "-----------------------------------------------------------"
         
-librote.so.$(ROTE_VERSION): $(OBJECTS)
-	$(CC) $(CFLAGS) -shared -o $@ -Wl,-soname=$(ROTE_SONAME) $(OBJECTS) $(LDFLAGS) $(LIBS)
+librote.$(ROTE_VERSION).dylib: $(OBJECTS)
+	$(CC) $(CFLAGS) -dynamiclib -o $@ -Wl,-dylib_install_name -Wl,$(ROTE_SONAME) $(OBJECTS) $(LDFLAGS) $(LIBS)
 
 .depends: $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -MM $(SOURCES) >.depends
@@ -70,7 +70,7 @@ librote.so.$(ROTE_VERSION): $(OBJECTS)
 -include .depends
 
 clean:
-	rm -f *.o .depends librote.so.*
+	rm -f *.o .depends librote.*.dylib
 
 pristine: clean
 	rm -rf autom4te.cache configure config.status config.log Makefile rote-config
