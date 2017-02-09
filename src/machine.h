@@ -20,30 +20,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  * Copyright (c) 2002 Bruno T. C. de Oliveira
  */
+#pragma once
 
-#ifndef omnitty_machine_h
-#define omnitty_machine_h
 
 #include <rote/rote.h>
 #define TAGSTACK_SIZE 8
 
 /* This structure represents each machine the program interacts with */
-typedef struct Machine_ {
-   char *name;  /* name of the machine */
-   bool tag;    /* whether the machine is 'tagged' */
-
-   bool alive;  /* initially set to true; set to false when 
-                 * main program notifies that a certain pid has died and
-                 * it matches this machine's ssh pid */
-
-   RoteTerm *vt; /* the machine's virtual terminal (ROTE library) */
-   pid_t pid;    /* pid of ssh process running in terminal */
-
-   /* the following stack is used for storing the 'tagged' state for
-    * later retrieval */
-   bool tagstack[TAGSTACK_SIZE];
-   int tagstack_count;
-} Machine;
+struct Machine {
+    char *name;  /* name of the machine */
+    bool tag;    /* whether the machine is 'tagged' */
+    
+    bool alive;  /* initially set to true; set to false when
+                  * main program notifies that a certain pid has died and
+                  * it matches this machine's ssh pid */
+    
+    RoteTerm *vt; /* the machine's virtual terminal (ROTE library) */
+    pid_t pid;    /* pid of ssh process running in terminal */
+    
+    /* the following stack is used for storing the 'tagged' state for
+     * later retrieval */
+    bool tagstack[TAGSTACK_SIZE];
+    int tagstack_count;
+};
 
 /* Creates a new machine with the given name and virtual terminal dimensions.
  * Returns a pointer to the newly created machine. The machine must be
@@ -63,6 +62,4 @@ void machine_tag_pop(Machine*);
 
 /* Rename a machine */
 void machine_rename(Machine*, char*);
-
-#endif
 

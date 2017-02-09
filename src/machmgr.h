@@ -20,9 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  * Copyright (c) 2002 Bruno T. C. de Oliveira
  */
+#pragma once
 
-#ifndef omnitty_machmgr_h
-#define omnitty_machmgr_h
 
 #include <ncurses.h>
 #include <sys/types.h>
@@ -40,14 +39,14 @@ void machmgr_init(WINDOW *w, int vtrows, int vtcols);
 void machmgr_draw_list();
 
 /* Draws the summary area in the passed window. The "summary" consists of
- * a few characters for each machine, and those characters give the user an 
+ * a few characters for each machine, and those characters give the user an
  * idea of what is going on in that machine's terminal. Those characters
  * will be the characters that are "near" the cursor. This is difficult
- * to define, so see the implementation :-) 
+ * to define, so see the implementation :-)
  *
  * The supplied window should be on either side of the list window, and
  * vertically aligned with it (i.e. its top should match the list window's top,
- * same for bottom), because this function will draw the summaries that 
+ * same for bottom), because this function will draw the summaries that
  * correspond to each machine in the list window in the corresponding line
  * of the supplied window.
  *
@@ -80,7 +79,7 @@ void machmgr_update();
 /* Toggles multicast mode. When multicast mode is on, machmgr_forward_keypress
  * will send the keypress to all tagged machines; when multicast mode is
  * off, machmgr_forward_keypress will send keypresses only to the currently
- * selected machine. 
+ * selected machine.
  *
  * Multicast mode is initially off.
  */
@@ -113,7 +112,7 @@ void machmgr_tag_all(bool ignore_dead);
 /* Resets the 'tagged' attribute of all machines */
 void machmgr_untag_all();
 
-/* Moves the selection to the previous machine; that is, makes the previous 
+/* Moves the selection to the previous machine; that is, makes the previous
  * machine in the list the selected machine. */
 void machmgr_prev_machine();
 
@@ -133,6 +132,4 @@ void machmgr_handle_death(pid_t p);
 
 /* Rename the currently selected machine */
 void machmgr_rename(char *newname);
-
-#endif
 

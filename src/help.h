@@ -20,14 +20,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  * Copyright (c) 2002 Bruno T. C. de Oliveira
  */
-
-#ifndef omnitty_help_h
-#define omnitty_help_h
+#pragma once
 
 /* Shows a help window onscreen. After calling this function, you should
  * touchwin() your windows to make them redraw fully the next time,
  * since your screen will be trashed. */
 void help_show();
-
-#endif
 

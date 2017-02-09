@@ -20,9 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  * Copyright (c) 2002 Bruno T. C. de Oliveira
  */
-
-#ifndef omnitty_minibuf_h
-#define omnitty_minibuf_h
+#pragma once
 
 #include <stdbool.h>
 #include <ncurses.h>
@@ -49,6 +47,4 @@ void minibuf_msg(WINDOW *w, const char *msg, unsigned char attr);
  * Remember to call this function with an empty (or NULL) message
  * to erase it. */
 void minibuf_put(WINDOW *w, const char *msg, unsigned char attr);
-
-#endif
 

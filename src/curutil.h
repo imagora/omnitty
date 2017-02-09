@@ -20,13 +20,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  * Copyright (c) 2002 Bruno T. C. de Oliveira
  */
+#pragma once
 
-#ifndef omnitty_curutil_h
-#define omnitty_curutil_h
 
 #include <ncurses.h>
 
-/* This function initializes the curses color pairs (through init_pair()) 
+/* This function initializes the curses color pairs (through init_pair())
  * according to the standard used by the ROTE library: if the foreground
  * color is f (0-7) and the background color is b (0-7), then the
  * corresponding color pair number is 8 * b + (7 - f). There is no
@@ -44,7 +43,4 @@ void curutil_window_size(WINDOW *w, int *width, int *height);
 
 /* Fills the given window with the given character. */
 void curutil_window_fill(WINDOW *w, int ch);
-
-#endif
-
 

@@ -28,42 +28,42 @@
 #define CMD_FORMAT "/usr/bin/ssh %s"
 
 Machine *machine_new(const char *name, int vtrows, int vtcols) {
-   static char cmd[128];
-   Machine *m = malloc(sizeof(Machine));
-   memset(m, 0, sizeof(Machine));
-   
-   m->alive = true;
-   m->name = strdup(name);
-   m->vt = rote_vt_create(vtrows, vtcols);
-
-   /* build the command line and fork an ssh to the given machine */
-   if (120 < snprintf(cmd, 120, CMD_FORMAT, m->name)) abort();
-   m->pid = rote_vt_forkpty(m->vt, cmd);
-
-   return m;
+    static char cmd[128];
+    Machine *m = (Machine *)malloc(sizeof(Machine));
+    memset(m, 0, sizeof(Machine));
+    
+    m->alive = true;
+    m->name = strdup(name);
+    m->vt = rote_vt_create(vtrows, vtcols);
+    
+    /* build the command line and fork an ssh to the given machine */
+    if (120 < snprintf(cmd, 120, CMD_FORMAT, m->name)) abort();
+    m->pid = rote_vt_forkpty(m->vt, cmd);
+    
+    return m;
 }
 
 void machine_destroy(Machine *m) {
-   if (!m) return;
-   free(m->name);
-   rote_vt_destroy(m->vt);
-   free(m);
+    if (!m) return;
+    free(m->name);
+    rote_vt_destroy(m->vt);
+    free(m);
 }
 
 void machine_rename(Machine *m, char *newname) {
- 
-  if (!m) return;
-  free(m->name);
-  m->name = strdup(newname);
+    
+    if (!m) return;
+    free(m->name);
+    m->name = strdup(newname);
 }
 
 void machine_tag_push(Machine *m) {
-   if (m->tagstack_count >= TAGSTACK_SIZE) return;
-   m->tagstack[m->tagstack_count++] = m->tag;
+    if (m->tagstack_count >= TAGSTACK_SIZE) return;
+    m->tagstack[m->tagstack_count++] = m->tag;
 }
 
 void machine_tag_pop(Machine *m) {
-   if (!m->tagstack_count) return;
-   m->tag = m->tagstack[--m->tagstack_count];
+    if (!m->tagstack_count) return;
+    m->tag = m->tagstack[--m->tagstack_count];
 }
 

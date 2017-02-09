@@ -20,9 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  * Copyright (c) 2002 Bruno T. C. de Oliveira
  */
-
-#ifndef omnitty_menu_h
-#define omnitty_menu_h
+#pragma once
 
 #include <ncurses.h>
 
@@ -35,6 +33,4 @@ void menu_init(WINDOW *minibuf);
  * the screen will be dirty so you must touchwin() all your windows to
  * get them to redraw fully. */
 void menu_show();
-
-#endif
 
