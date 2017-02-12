@@ -34,6 +34,10 @@ Copyright (c) 2004 Bruno T. C. de Oliveira
 #include <unistd.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Color codes: 0 = black, 1 = red, 2 = green, 3 = yellow, 4 = blue,
  *              5 = magenta, 6 = cyan, 7 = white. 
  *
@@ -300,5 +304,8 @@ void rote_vt_install_handler(RoteTerm *rt, rote_es_handler_t handler);
                                      * that it will even if more characters
                                      * are added to it. */
 
+#ifdef __cplusplus
+}
 #endif
 
+#endif
