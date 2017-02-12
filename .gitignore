@@ -1,0 +1,20 @@
+# xcode ide
+ide/xcode/omnitty.xcodeproj/xcuserdata
+ide/xcode/omnitty.xcodeproj/project.xcworkspace/
+
+# qt creator ide
+*.user
+*.stash
+ide/qmake/build*/
+
+# build result
+.depends
+*.o
+config.log
+config.status
+Makefile
+
+# reote build result
+librote*.dylib
+rote-config
+
