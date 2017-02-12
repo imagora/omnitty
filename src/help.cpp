@@ -1,34 +1,11 @@
-/* help.c
- *
- * Omnitty SSH Multiplexer
- * Copyright (c) 2004 Bruno Takahashi C. de Oliveira
- * All rights reserved.
- *
- * LICENSE INFORMATION:
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- * Copyright (c) 2002 Bruno T. C. de Oliveira
- */
-
-#include "help.h"
-#include "curutil.h"
 #include <ncurses.h>
 #include <stdlib.h>
+#include "curutil.h"
+#include "help.h"
+
 
 #define HELP_LINES 25
 #define HELP_COLS  80
-
 #define HELP_CONTENTS \
 "Omnitty allows you to ssh into several machines at once. The list on the\n" \
 "shows the machines you are logged into. Every key you type will be sent\n" \
@@ -53,6 +30,7 @@
 "      machine, regardless of tags. When {multicast} is selected, the\n" \
 "      keys will be sent to {all tagged machines}, allowing you to operate\n"\
 "      on several machines at once.\n"
+
 
 void help_show() {
     int termwidth, termheight;

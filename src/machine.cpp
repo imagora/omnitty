@@ -1,69 +1,40 @@
-/* machine.c
- *
- * Omnitty SSH Multiplexer
- * Copyright (c) 2004 Bruno Takahashi C. de Oliveira
- * All rights reserved.
- *
- * LICENSE INFORMATION:
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- * Copyright (c) 2002 Bruno T. C. de Oliveira
- */
-
 #include "machine.h"
-#include <string.h>
-#include <stdlib.h>
+
 
 #define CMD_FORMAT "/usr/bin/ssh %s"
+#define TAGSTACK_SIZE 8
 
-Machine *machine_new(const char *name, int vtrows, int vtcols) {
-    static char cmd[128];
-    Machine *m = (Machine *)malloc(sizeof(Machine));
-    memset(m, 0, sizeof(Machine));
-    
-    m->alive = true;
-    m->name = strdup(name);
-    m->vt = rote_vt_create(vtrows, vtcols);
-    
+
+Machine::Machine(const std::string &machineName, int vtRows, int vtCols)
+    : m_isTagged(false), m_isAlive(true), m_machineName(machineName)
+{
+    m_tagStack.reserve(TAGSTACK_SIZE);
+    m_virtualTerminal = rote_vt_create(vtRows, vtCols);
+
     /* build the command line and fork an ssh to the given machine */
-    if (120 < snprintf(cmd, 120, CMD_FORMAT, m->name)) abort();
-    m->pid = rote_vt_forkpty(m->vt, cmd);
-    
-    return m;
+    static char cmd[128];
+//    if (120 < snprintf(cmd, 120, CMD_FORMAT, m->name)) abort();
+    m_pid = rote_vt_forkpty(m_virtualTerminal, cmd);
 }
 
-void machine_destroy(Machine *m) {
-    if (!m) return;
-    free(m->name);
-    rote_vt_destroy(m->vt);
-    free(m);
+
+Machine::~Machine()
+{
+    rote_vt_destroy(m_virtualTerminal);
 }
 
-void machine_rename(Machine *m, char *newname) {
-    
-    if (!m) return;
-    free(m->name);
-    m->name = strdup(newname);
+
+void Machine::PushMachineTag()
+{
+    if (m_tagStack.size() >= TAGSTACK_SIZE) return;
+    m_tagStack.push_back(static_cast<uint8_t>(m_isTagged));
 }
 
-void machine_tag_push(Machine *m) {
-    if (m->tagstack_count >= TAGSTACK_SIZE) return;
-    m->tagstack[m->tagstack_count++] = m->tag;
-}
 
-void machine_tag_pop(Machine *m) {
-    if (!m->tagstack_count) return;
-    m->tag = m->tagstack[--m->tagstack_count];
+void Machine::PopMachineTag()
+{
+    if (m_tagStack.empty()) return;
+    m_isTagged = static_cast<bool>(m_tagStack.back());
+    m_tagStack.pop_back();
 }
 
