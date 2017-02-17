@@ -3,16 +3,20 @@
 #include <ncurses.h>
 
 
-class MachineManager;
-typedef std::shared_ptr<MachineManager> MachineManagerPtr;
+namespace omnitty {
+
+
+class OmniMachineManager;
+typedef std::shared_ptr<OmniMachineManager> MachineManagerPtr;
 
 
 class OmniMenu
 {
 public:
-    /* Initializes the menu system. minibuf is the window it should use
-     * as "minibuffer", that is, the window where it will show prompts
-     * and confirmation messages. */
+    /**
+     * @brief Initializes the menu system.
+     * @param machineMgrPtr The machine manager ptr.
+     */
     OmniMenu(MachineManagerPtr machineMgrPtr);
 
 
@@ -25,9 +29,11 @@ public:
     void DrawMenu();
 
 
-    /* Shows the Omnitty extended menu onscreen. After calling this function,
-     * the screen will be dirty so you must touchwin() all your windows to
-     * get them to redraw fully. */
+    /**
+     * @brief Shows the Omnitty extended menu on screen.
+     * @details After calling this function, the screen will be dirty so you
+     *          must touchwin() all your windows to get them to redraw fully.
+     */
     void ShowMenu();
 
 
@@ -67,12 +73,21 @@ public:
     void ShowMessageNotWait(const char *msg, unsigned char attr);
 
 
+protected:
+    /**
+     * @brief Shows a help window on screen.
+     * @details After calling this function, you should touchwin() your windows
+     *          to make them redraw fully the next time, since your screen will
+     *          be trashed.
+     */
+    void ShowHelp();
+
+
 private:
     WINDOW              *m_menuWnd;
     MachineManagerPtr   m_machineMgr;
 };
 
 
-
-
+}
 

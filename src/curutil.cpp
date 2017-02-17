@@ -1,8 +1,8 @@
-#include <ncurses.h>
 #include "curutil.h"
 
 
-void curutil_attrset(WINDOW *win, unsigned char attr) {
+void omnitty::CurutilAttrset(WINDOW *win, unsigned char attr)
+{
     int fg = (attr & 0x70) >> 4;
     int bg = attr & 0x07;
     int cp = bg * 8 + 7 - fg;
@@ -15,7 +15,8 @@ void curutil_attrset(WINDOW *win, unsigned char attr) {
 }
 
 
-void curutil_colorpair_init() {
+void omnitty::CurutilColorpairInit()
+{
     int f, b, cp;
     for (f = 0; f < 8; f++) for (b = 0; b < 8; b++) {
         cp = b*8+7-f;
@@ -24,7 +25,8 @@ void curutil_colorpair_init() {
 }
 
 
-void curutil_window_fill(WINDOW *win, int ch) {
+void omnitty::CurutilWindowFill(WINDOW *win, int ch)
+{
     int h, w;
     int r, c;
     

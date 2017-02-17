@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <rote/rote.h>
 #include "curutil.h"
 #include "machine.h"
 #include "machine_manager.h"
@@ -8,33 +7,36 @@
 #define MACHINE_MAX 256
 
 
-MachineManager::MachineManager()
+using namespace omnitty;
+
+
+OmniMachineManager::OmniMachineManager()
     : m_isMulticast(false), m_selectedMachine(0), m_scrollPos(0),
       m_virtualTerminalRows(0), m_virtualTerminalCols(0)
 {
 }
 
 
-MachineManager::~MachineManager()
+OmniMachineManager::~OmniMachineManager()
 {
 
 }
 
-void MachineManager::AddMachine(const std::string &machineName)
+void OmniMachineManager::AddMachine(const std::string &machineName)
 {
     if (machineName.empty()) return;
     if (m_machines.size() >= MACHINE_MAX) return;
-    m_machines.push_back(std::make_shared<Machine>(machineName, m_virtualTerminalRows, m_virtualTerminalCols));
+    m_machines.push_back(std::make_shared<OmniMachine>(machineName, m_virtualTerminalRows, m_virtualTerminalCols));
 }
 
 
-void MachineManager::DeleteCurrentMachine()
+void OmniMachineManager::DeleteCurrentMachine()
 {
     DeleteMachineByIndex(m_selectedMachine);
 }
 
 
-void MachineManager::DeleteTaggedMachines()
+void OmniMachineManager::DeleteTaggedMachines()
 {
     auto iter = m_machines.begin();
     while (iter != m_machines.end()) {
@@ -47,7 +49,7 @@ void MachineManager::DeleteTaggedMachines()
 }
 
 
-void MachineManager::DeleteAllMachines()
+void OmniMachineManager::DeleteAllMachines()
 {
     m_machines.clear();
     m_selectedMachine = 0;
@@ -55,7 +57,7 @@ void MachineManager::DeleteAllMachines()
 }
 
 
-void MachineManager::DeleteDeadMachines()
+void OmniMachineManager::DeleteDeadMachines()
 {
     auto iter = m_machines.begin();
     while (iter != m_machines.end()) {
@@ -68,14 +70,14 @@ void MachineManager::DeleteDeadMachines()
 }
 
 
-void MachineManager::RenameMachine(const std::string &newName)
+void OmniMachineManager::RenameMachine(const std::string &newName)
 {
     m_machines[m_selectedMachine]->SetMachineName(newName);
     UpdateAllMachines();
 }
 
 
-void MachineManager::UpdateAllMachines()
+void OmniMachineManager::UpdateAllMachines()
 {
     for (auto &machine : m_machines) {
         rote_vt_update(machine->GetVirtualTerminal());
@@ -83,7 +85,7 @@ void MachineManager::UpdateAllMachines()
 }
 
 
-void MachineManager::ResetSelectedMachine(int height)
+void OmniMachineManager::ResetSelectedMachine(int height)
 {
     /* clamp m_selectedMachine to bounds */
     if (m_selectedMachine >= static_cast<int>(m_machines.size())) {
@@ -107,7 +109,7 @@ void MachineManager::ResetSelectedMachine(int height)
 }
 
 
-std::string MachineManager::MakeVirtualTerminalSummary(uint32_t machineIndex, int summaryWidth)
+std::string OmniMachineManager::MakeVirtualTerminalSummary(uint32_t machineIndex, int summaryWidth)
 {
     if (machineIndex >= m_machines.size()) return std::string();
     MachinePtr machine = m_machines[machineIndex];
@@ -140,7 +142,7 @@ std::string MachineManager::MakeVirtualTerminalSummary(uint32_t machineIndex, in
 }
 
 
-void MachineManager::TagCurrent()
+void OmniMachineManager::TagCurrent()
 {
     if (m_selectedMachine >= 0 && m_selectedMachine < static_cast<int>(m_machines.size())) {
         m_machines[m_selectedMachine]->ToggleIsTagged();
@@ -148,7 +150,7 @@ void MachineManager::TagCurrent()
 }
 
 
-void MachineManager::TagAll(bool ignoreDead)
+void OmniMachineManager::TagAll(bool ignoreDead)
 {
     for (auto &machine : m_machines) {
         machine->SetIsTagged(!ignoreDead || machine->IsAlive());
@@ -156,7 +158,7 @@ void MachineManager::TagAll(bool ignoreDead)
 }
 
 
-void MachineManager::UnTagAll()
+void OmniMachineManager::UnTagAll()
 {
     for (auto &machine : m_machines) {
         machine->SetIsTagged(false);
@@ -164,21 +166,21 @@ void MachineManager::UnTagAll()
 }
 
 
-void MachineManager::PrevMachine()
+void OmniMachineManager::PrevMachine()
 {
     --m_selectedMachine;
 }
 
 
-void MachineManager::NextMachine()
+void OmniMachineManager::NextMachine()
 {
     ++m_selectedMachine;
 }
 
-void MachineManager::ForwardKeypress(int key)
+void OmniMachineManager::ForwardKeypress(int key)
 {
     if (m_isMulticast) {
-        std::for_each(m_machines.begin(), m_machines.end(), [&](std::shared_ptr<Machine> &machine){
+        std::for_each(m_machines.begin(), m_machines.end(), [&](std::shared_ptr<OmniMachine> &machine){
             if (machine->IsTagged()) rote_vt_keypress(machine->GetVirtualTerminal(), key);
         });
         return;
@@ -189,7 +191,7 @@ void MachineManager::ForwardKeypress(int key)
 }
 
 
-void MachineManager::HandleDeath(pid_t pid)
+void OmniMachineManager::HandleDeath(pid_t pid)
 {
     for (auto &machine : m_machines) {
         if (machine->GetPid() == pid) {
@@ -201,7 +203,7 @@ void MachineManager::HandleDeath(pid_t pid)
 }
 
 
-void MachineManager::DeleteMachineByIndex(int index)
+void OmniMachineManager::DeleteMachineByIndex(int index)
 {
     if (index < 0 || index >= static_cast<int>(m_machines.size()))
         return;

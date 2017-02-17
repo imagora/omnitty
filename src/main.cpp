@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <string.h>
 
+#include "log.h"
 #include "curutil.h"
 #include "machine.h"
 #include "window_manager.h"
@@ -26,14 +27,16 @@
 "\n"
 
 
-static volatile int zombie_count = 0;
+static volatile int g_zombieCount = 0;
 void sigchld_handler(int signo) {
     (void)signo;
-    zombie_count++;
+    g_zombieCount++;
 }
 
 
 int main(int argc, char **argv) {
+    omnitty::InitLogger();
+    LOG4CPLUS_INFO(omnitty::LOGGER_NAME, "This is a simple test for log");
     int ch = 0;
     int list_win_chars = LISTWIN_DEFAULT_CHARS;
     int term_win_chars = TERMWIN_DEFAULT_CHARS;
@@ -59,15 +62,15 @@ int main(int argc, char **argv) {
 
     signal(SIGCHLD, sigchld_handler);
 
-    WindowManager wndMgr(list_win_chars, term_win_chars);
-    wndMgr.InitCurses();
+    omnitty::OmniWindowManager wndMgr(list_win_chars, term_win_chars);
+    wndMgr.Init();
     wndMgr.InitWindows();
     
     pid_t chldpid;
     bool quit = false;
     while (!quit) {
-        if (zombie_count) {
-            zombie_count--;
+        if (g_zombieCount) {
+            g_zombieCount--;
             chldpid = wait(NULL);
             wndMgr.HandleDeath(chldpid);
         }
@@ -92,7 +95,7 @@ int main(int argc, char **argv) {
             wndMgr.TagCurrent();
             break;
         case KEY_F(5):
-            wndMgr.AddMachine(zombie_count);
+            wndMgr.AddMachine(g_zombieCount);
             break;
         case KEY_F(6):
             wndMgr.DeleteMachine();

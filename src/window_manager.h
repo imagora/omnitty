@@ -4,13 +4,16 @@
 #include "menu.h"
 
 
-class WindowManager
+namespace omnitty {
+
+
+class OmniWindowManager
 {
 public:
-    WindowManager(int listWndWidth, int terminalWndWidth);
+    OmniWindowManager(int listWndWidth, int terminalWndWidth);
 
 
-    ~WindowManager();
+    ~OmniWindowManager();
 
 
     WINDOW *GetListWnd() const { return m_listWnd; }
@@ -23,7 +26,7 @@ public:
 
 
 public:
-    void InitCurses();
+    void Init();
 
 
     /* Window layout:
@@ -157,4 +160,7 @@ private:
     MachineManagerPtr   m_machineMgr;
     OmniMenu            m_menu;
 };
+
+
+}
 

@@ -6,14 +6,17 @@
 #include "machine.h"
 
 
-typedef std::shared_ptr<Machine>    MachinePtr;
+namespace omnitty {
+
+
+typedef std::shared_ptr<OmniMachine>    MachinePtr;
 typedef std::vector<MachinePtr>     MachineList;
 
 
 /**
  * @brief The MachineManager class
  */
-class MachineManager
+class OmniMachineManager
 {
 public:
     /**
@@ -29,13 +32,13 @@ public:
      * @param vtrows The rows of the virtual terminal.
      * @param vtcols the cols of the virtual terminal.
      */
-    MachineManager();
+    OmniMachineManager();
     
     
     /**
      * @brief Release all members.
      */
-    ~MachineManager();
+    ~OmniMachineManager();
 
 
     int GetSelectedMachine() const { return m_selectedMachine; }
@@ -205,8 +208,8 @@ protected:
 
 
 protected:
-    MachineManager(const MachineManager &) = delete;
-    MachineManager &operator=(const MachineManager &) = delete;
+    OmniMachineManager(const OmniMachineManager &) = delete;
+    OmniMachineManager &operator=(const OmniMachineManager &) = delete;
     
 
 private:
@@ -220,4 +223,7 @@ private:
     uint32_t            m_virtualTerminalCols;
     MachineList         m_machines;
 };
+
+
+}
 

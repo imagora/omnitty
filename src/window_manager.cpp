@@ -1,3 +1,4 @@
+#include "log.h"
 #include "curutil.h"
 #include "machine_manager.h"
 #include "window_manager.h"
@@ -19,22 +20,23 @@
 #define SPLASH_LINE_2 "Copyright (c) 2017 AgoraLab"
 
 
+using namespace omnitty;
 
 
-WindowManager::WindowManager(int listWndWidth, int terminalWndWidth)
+OmniWindowManager::OmniWindowManager(int listWndWidth, int terminalWndWidth)
     : m_listWndWidth(listWndWidth), m_terminalWndWidth(terminalWndWidth),
-      m_machineMgr(std::make_shared<MachineManager>()), m_menu(m_machineMgr)
+      m_machineMgr(std::make_shared<OmniMachineManager>()), m_menu(m_machineMgr)
 {
 }
 
 
-WindowManager::~WindowManager()
+OmniWindowManager::~OmniWindowManager()
 {
 
 }
 
 
-void WindowManager::InitCurses()
+void OmniWindowManager::Init()
 {
     initscr();
     start_color();
@@ -42,7 +44,7 @@ void WindowManager::InitCurses()
     keypad(stdscr, TRUE);
     timeout(200);
     raw();
-    curutil_colorpair_init();
+    CurutilColorpairInit();
     clear();
 
     /* register some alternate escape sequences for the function keys,
@@ -64,6 +66,7 @@ void WindowManager::InitCurses()
 
     int w, h, i = 0;
     getmaxyx(stdscr, h, w);
+    LOG4CPLUS_INFO_FMT(LOGGER_NAME, "window height: %d, width: %d", h, w);
     if (h < MIN_REQUIRED_HEIGHT || w < MIN_REQUIRED_WIDTH) {
         endwin();
         fprintf(stderr, "ERROR: omnitty requires a %d x %d terminal to run.\n",
@@ -72,10 +75,10 @@ void WindowManager::InitCurses()
     }
 
     wmove(stdscr, h / 2, (w - strlen(SPLASH_LINE_1))/2);
-    curutil_attrset(stdscr, 0x40);
+    CurutilAttrset(stdscr, 0x40);
     waddstr(stdscr, SPLASH_LINE_1);
 
-    curutil_attrset(stdscr, 0x70);
+    CurutilAttrset(stdscr, 0x70);
     wmove(stdscr, h/2 + 1, (w - strlen(SPLASH_LINE_2))/2);
     waddstr(stdscr, SPLASH_LINE_2);
 
@@ -96,7 +99,7 @@ void WindowManager::InitCurses()
  *
  * A = list_win_chars + 2
  */
-void WindowManager::InitWindows()
+void OmniWindowManager::InitWindows()
 {
     /* obtain terminal dimensions */
     int termcols, termrows;
@@ -180,14 +183,14 @@ void WindowManager::InitWindows()
 }
 
 
-void WindowManager::ShowMenu()
+void OmniWindowManager::ShowMenu()
 {
     m_menu.ShowMenu();
     SelectMachine();
 }
 
 
-void WindowManager::DrawMachineList()
+void OmniWindowManager::DrawMachineList()
 {
     int w, h;
     werase(m_listWnd);
@@ -209,7 +212,7 @@ void WindowManager::DrawMachineList()
             attr |= machine->IsAlive() ? 0xA0 : 0x20;
         }
 
-        curutil_attrset(m_listWnd, attr);
+        CurutilAttrset(m_listWnd, attr);
         wmove(m_listWnd, i - scrollPos, 0);
         waddch(m_listWnd, machine->IsTagged() ? '*' : ' ');
 
@@ -228,7 +231,7 @@ void WindowManager::DrawMachineList()
 }
 
 
-void WindowManager::DrawSummary()
+void OmniWindowManager::DrawSummary()
 {
     int sumheight, sumwidth;
     werase(m_summaryWnd);
@@ -238,7 +241,7 @@ void WindowManager::DrawSummary()
     uint32_t scrollPos = static_cast<uint32_t>(m_machineMgr->GetScrollPos());
     uint32_t machineCount = m_machineMgr->GetMachineCount();
     for (uint32_t i = scrollPos; i < scrollPos + sumheight && i < machineCount; ++i) {
-        curutil_attrset(m_summaryWnd, 0x80);
+        CurutilAttrset(m_summaryWnd, 0x80);
         wmove(m_summaryWnd, i - scrollPos, 0);
         std::string summary(m_machineMgr->MakeVirtualTerminalSummary(i, sumwidth));
         waddstr(m_summaryWnd, summary.c_str());
@@ -246,7 +249,7 @@ void WindowManager::DrawSummary()
 }
 
 
-void WindowManager::DrawVirtualTerminal()
+void OmniWindowManager::DrawVirtualTerminal()
 {
     werase(m_virtualTerminalWnd);
     int selectedMachine = m_machineMgr->GetSelectedMachine();
@@ -257,7 +260,7 @@ void WindowManager::DrawVirtualTerminal()
 }
 
 
-void WindowManager::Redraw(bool forceFullRedraw)
+void OmniWindowManager::Redraw(bool forceFullRedraw)
 {
     if (forceFullRedraw) {
         touchwin(stdscr);
@@ -286,7 +289,7 @@ void WindowManager::Redraw(bool forceFullRedraw)
 }
 
 
-void WindowManager::AddMachine(volatile int &zombieCount)
+void OmniWindowManager::AddMachine(volatile int &zombieCount)
 {
     static char buf[32] = {0};
     if (m_menu.Prompt("Add: ", 0xE0, buf, 32)) {
@@ -300,7 +303,7 @@ void WindowManager::AddMachine(volatile int &zombieCount)
 }
 
 
-void WindowManager::AddMachinesFromFile(const std::string &file, volatile int &zombieCount)
+void OmniWindowManager::AddMachinesFromFile(const std::string &file, volatile int &zombieCount)
 {
     static char buf[128];
     bool pipe = false;
@@ -350,7 +353,7 @@ void WindowManager::AddMachinesFromFile(const std::string &file, volatile int &z
 }
 
 
-void WindowManager::DeleteMachine()
+void OmniWindowManager::DeleteMachine()
 {
     static char buf[2] = {0};
 
@@ -360,13 +363,13 @@ void WindowManager::DeleteMachine()
 }
 
 
-void WindowManager::UpdateAllMachines()
+void OmniWindowManager::UpdateAllMachines()
 {
     m_machineMgr->UpdateAllMachines();
 }
 
 
-void WindowManager::SelectMachine()
+void OmniWindowManager::SelectMachine()
 {
     int screenwidth, screenheight;
     getmaxyx(m_listWnd, screenheight, screenwidth);
@@ -374,40 +377,40 @@ void WindowManager::SelectMachine()
 }
 
 
-void WindowManager::PrevMachine()
+void OmniWindowManager::PrevMachine()
 {
     m_machineMgr->PrevMachine();
     SelectMachine();
 }
 
 
-void WindowManager::NextMachine()
+void OmniWindowManager::NextMachine()
 {
     m_machineMgr->NextMachine();
     SelectMachine();
 }
 
 
-void WindowManager::HandleDeath(pid_t pid)
+void OmniWindowManager::HandleDeath(pid_t pid)
 {
     m_machineMgr->HandleDeath(pid);
 }
 
 
-void WindowManager::ToggleMulticast()
+void OmniWindowManager::ToggleMulticast()
 {
     m_machineMgr->ToggleMulticast();
     SelectMachine();
 }
 
 
-void WindowManager::TagCurrent()
+void OmniWindowManager::TagCurrent()
 {
     m_machineMgr->TagCurrent();
 }
 
 
-void WindowManager::ForwardKeypress(int key)
+void OmniWindowManager::ForwardKeypress(int key)
 {
     m_machineMgr->ForwardKeypress(key);
 }

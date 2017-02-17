@@ -1,15 +1,16 @@
 #pragma once
-
-
 #include <string>
 #include <vector>
 #include <rote/rote.h>
 
 
+namespace omnitty {
+
+
 /**
  * @brief This class represents each machine the program interacts with
  */
-class Machine
+class OmniMachine
 {
 public:
     /**
@@ -22,13 +23,13 @@ public:
      * @param vtRows Virtual terminal rows.
      * @param vtCols Virtual terminal Cols.
      */
-    Machine(const std::string &machineName, int vtRows, int vtCols);
+    OmniMachine(const std::string &machineName, int vtRows, int vtCols);
 
 
     /**
      * @brief Release the RoteTerm here.
      */
-    ~Machine();
+    ~OmniMachine();
 
 
     /**
@@ -120,4 +121,7 @@ private:
     /** the following stack is used for storing the 'tagged' state for later retrieval */
     std::vector<uint8_t>    m_tagStack;
 };
+
+
+}
 
