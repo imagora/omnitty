@@ -1,16 +1,15 @@
-OMNITTY MULTIPLE-MACHINE SSH MULTIPLEXER
+#OMNITTY MULTIPLE-MACHINE SSH MULTIPLEXER
+
 Copyright (c) 2004 Bruno T. C. de Oliveira
 Licensed under the GNU General Public License
 See the COPYING file for more details on the license terms.
 
-[[ AUTHOR AND PROJECT HOMEPAGE ]]
+##AUTHOR AND PROJECT HOMEPAGE
 This program was written by Bruno Takahashi C. de Oliveira, a
-Computer Science student at Universidade de São Paulo, Brazil.
-The project home page is:
+Computer Science student at Universidade de Sæ³” Paulo, Brazil.
+The project home page is: `http://omnitty.sourceforge.net`
 
-                http://omnitty.sourceforge.net
-
-[[ WHAT IS IT? ]]
+##WHAT IS IT?
 
 Omnitty is a curses-based program that allows one to log into several
 machines simultaneously and interact with them, selectively directing
@@ -20,12 +19,12 @@ has built-in terminal emulation capability. When the terminal is large
 enough, Omnitty also displays a "summary area" for each machine,
 in which it shows what the latest output from the machine was.
 
-[[ REQUIREMENTS ]]
+##REQUIREMENTS
 
 To compile omnitty, you need libROTE (http://rote.sourceforge.net),
 ncurses and of course libc.
 
-[[ CONTRIBUTIONS ]]
+##CONTRIBUTIONS
 
 Thanks to the following people for their contributions to the project
 in the form of patches, suggestions, testing or otherwise:
@@ -33,7 +32,7 @@ in the form of patches, suggestions, testing or otherwise:
 * Richard Palmer <richard.palmer@gmail.com> - for the patch that allows
   the user to rename machines
 
-[[ MORE DETAILS ]]
+##MORE DETAILS
 
 Multiple-host network administration usually involves running the same
 set of commands on several different machines. An administrator might
