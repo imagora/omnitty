@@ -1,13 +1,16 @@
-#OMNITTY MULTIPLE-MACHINE SSH MULTIPLEXER
+#OMNITTY For macOS
 
-Copyright (c) 2004 Bruno T. C. de Oliveira
+Copyright (c) 2017 ShanHui@agora.io
 Licensed under the GNU General Public License
 See the COPYING file for more details on the license terms.
 
-##AUTHOR AND PROJECT HOMEPAGE
-This program was written by Bruno Takahashi C. de Oliveira, a
-Computer Science student at Universidade de S泔 Paulo, Brazil.
-The project home page is: `http://omnitty.sourceforge.net`
+##About OMNITTY 
+
+OMNITTY MULTIPLE-MACHINE SSH MULTIPLEXER, forked from `http://omnitty.sourceforge.net`.
+
+This program was written by Bruno Takahashi C. de Oliveira in C language.
+
+I rewrite it to C++ and add some new feature to it, such as build for macOS and so on.
 
 ##WHAT IS IT?
 
@@ -18,19 +21,6 @@ line-oriented and screen oriented in the target machines, because Omnitty
 has built-in terminal emulation capability. When the terminal is large
 enough, Omnitty also displays a "summary area" for each machine,
 in which it shows what the latest output from the machine was.
-
-##REQUIREMENTS
-
-To compile omnitty, you need libROTE (http://rote.sourceforge.net),
-ncurses and of course libc.
-
-##CONTRIBUTIONS
-
-Thanks to the following people for their contributions to the project
-in the form of patches, suggestions, testing or otherwise:
-
-* Richard Palmer <richard.palmer@gmail.com> - for the patch that allows
-  the user to rename machines
 
 ##MORE DETAILS
 
