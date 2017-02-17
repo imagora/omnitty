@@ -23,9 +23,19 @@
 using namespace omnitty;
 
 
+
 OmniWindowManager::OmniWindowManager(int listWndWidth, int terminalWndWidth)
     : m_listWndWidth(listWndWidth), m_terminalWndWidth(terminalWndWidth),
-      m_machineMgr(std::make_shared<OmniMachineManager>()), m_menu(m_machineMgr)
+      m_machineMgr(std::make_shared<OmniMachineManager>()), m_menu(m_machineMgr),
+      m_keypressFuncPtrs{
+        {KEY_F(1), &OmniWindowManager::ShowMenu},
+        {KEY_F(2), &OmniWindowManager::PrevMachine},
+        {KEY_F(3), &OmniWindowManager::NextMachine},
+        {KEY_F(4), &OmniWindowManager::TagCurrent},
+        {KEY_F(5), &OmniWindowManager::AddMachine},
+        {KEY_F(6), &OmniWindowManager::DeleteMachine},
+        {KEY_F(7), &OmniWindowManager::ToggleMulticast},
+    }
 {
 }
 
@@ -87,19 +97,36 @@ void OmniWindowManager::Init()
 
     wclear(stdscr);
     wrefresh(stdscr);
+
+    DrawWindows();
 }
 
 
-/* Window layout:
- *
- *      list    summary     terminal window
- *     window   window
- *    |-------|--------X|--------------------------------|
- *    0       A        BC                             termcols-1
- *
- * A = list_win_chars + 2
- */
-void OmniWindowManager::InitWindows()
+void OmniWindowManager::UpdateAllMachines()
+{
+    m_machineMgr->UpdateAllMachines();
+    Redraw(false);
+}
+
+
+void OmniWindowManager::HandleDeath(pid_t pid)
+{
+    m_machineMgr->HandleDeath(pid);
+}
+
+
+void OmniWindowManager::Keypress(int key, volatile int &zombieCount)
+{
+    auto iter = m_keypressFuncPtrs.find(key);
+    if (iter == m_keypressFuncPtrs.end()) {
+        ForwardKeypress(key, zombieCount);
+        return;
+    }
+    (this->*(iter->second))(key, zombieCount);
+}
+
+
+void OmniWindowManager::DrawWindows()
 {
     /* obtain terminal dimensions */
     int termcols, termrows;
@@ -180,13 +207,6 @@ void OmniWindowManager::InitWindows()
 
     m_machineMgr->SetVirtualTerminalSize(vtrows, vtcols);
     m_menu.DrawMenu();
-}
-
-
-void OmniWindowManager::ShowMenu()
-{
-    m_menu.ShowMenu();
-    SelectMachine();
 }
 
 
@@ -289,7 +309,35 @@ void OmniWindowManager::Redraw(bool forceFullRedraw)
 }
 
 
-void OmniWindowManager::AddMachine(volatile int &zombieCount)
+void OmniWindowManager::ShowMenu(int, volatile int &)
+{
+    m_menu.ShowMenu();
+    SelectMachine();
+    Redraw(true);
+}
+
+
+void OmniWindowManager::PrevMachine(int, volatile int &)
+{
+    m_machineMgr->PrevMachine();
+    SelectMachine();
+}
+
+
+void OmniWindowManager::NextMachine(int, volatile int &)
+{
+    m_machineMgr->NextMachine();
+    SelectMachine();
+}
+
+
+void OmniWindowManager::TagCurrent(int, volatile int &)
+{
+    m_machineMgr->TagCurrent();
+}
+
+
+void OmniWindowManager::AddMachine(int, volatile int &zombieCount)
 {
     static char buf[32] = {0};
     if (m_menu.Prompt("Add: ", 0xE0, buf, 32)) {
@@ -353,19 +401,27 @@ void OmniWindowManager::AddMachinesFromFile(const std::string &file, volatile in
 }
 
 
-void OmniWindowManager::DeleteMachine()
+void OmniWindowManager::DeleteMachine(int, volatile int &)
 {
     static char buf[2] = {0};
 
     if (m_menu.Prompt("Really delete it [y/n]?", 0x90, buf, 2) && (*buf == 'y' || *buf == 'Y')) {
         m_machineMgr->DeleteCurrentMachine();
     }
+    SelectMachine();
 }
 
 
-void OmniWindowManager::UpdateAllMachines()
+void OmniWindowManager::ToggleMulticast(int, volatile int &)
 {
-    m_machineMgr->UpdateAllMachines();
+    m_machineMgr->ToggleMulticast();
+    SelectMachine();
+}
+
+
+void OmniWindowManager::ForwardKeypress(int key, volatile int &)
+{
+    m_machineMgr->ForwardKeypress(key);
 }
 
 
@@ -375,44 +431,4 @@ void OmniWindowManager::SelectMachine()
     getmaxyx(m_listWnd, screenheight, screenwidth);
     m_machineMgr->ResetSelectedMachine(screenheight);
 }
-
-
-void OmniWindowManager::PrevMachine()
-{
-    m_machineMgr->PrevMachine();
-    SelectMachine();
-}
-
-
-void OmniWindowManager::NextMachine()
-{
-    m_machineMgr->NextMachine();
-    SelectMachine();
-}
-
-
-void OmniWindowManager::HandleDeath(pid_t pid)
-{
-    m_machineMgr->HandleDeath(pid);
-}
-
-
-void OmniWindowManager::ToggleMulticast()
-{
-    m_machineMgr->ToggleMulticast();
-    SelectMachine();
-}
-
-
-void OmniWindowManager::TagCurrent()
-{
-    m_machineMgr->TagCurrent();
-}
-
-
-void OmniWindowManager::ForwardKeypress(int key)
-{
-    m_machineMgr->ForwardKeypress(key);
-}
-
 
