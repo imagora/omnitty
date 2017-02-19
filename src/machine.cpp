@@ -1,7 +1,7 @@
 #include "machine.h"
 
 
-#define CMD_FORMAT "/usr/bin/ssh %s"
+static const std::string CMD_FORMAT("/usr/bin/ssh ");
 #define TAGSTACK_SIZE 8
 
 
@@ -14,10 +14,9 @@ OmniMachine::OmniMachine(const std::string &machineName, int vtRows, int vtCols)
     m_tagStack.reserve(TAGSTACK_SIZE);
     m_virtualTerminal = rote_vt_create(vtRows, vtCols);
 
-    /* build the command line and fork an ssh to the given machine */
-    static char cmd[128];
-//    if (120 < snprintf(cmd, 120, CMD_FORMAT, m->name)) abort();
-    m_pid = rote_vt_forkpty(m_virtualTerminal, cmd);
+    std::string cmd(CMD_FORMAT);
+    cmd += machineName;
+    m_pid = rote_vt_forkpty(m_virtualTerminal, cmd.c_str());
 }
 
 
