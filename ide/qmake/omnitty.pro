@@ -6,8 +6,12 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 
-LIBS += -L/usr/local/lib -lrote -lncurses -L/usr/local/Cellar/log4cplus/1.2.0/lib -llog4cplus
-INCLUDEPATH += /usr/local/include/ /usr/local/Cellar/log4cplus/1.2.0/include
+LIBS += -L/usr/local/lib -lrote -lncurses
+LIBS += -L/usr/local/Cellar/log4cplus/1.2.0/lib -llog4cplus
+LIBS += -L/usr/local/Cellar/jsoncpp/1.8.0/lib -ljsoncpp
+INCLUDEPATH += /usr/local/include/
+INCLUDEPATH += /usr/local/Cellar/log4cplus/1.2.0/include
+INCLUDEPATH += /usr/local/Cellar/jsoncpp/1.8.0/include
 
 
 SOURCES += \
@@ -16,7 +20,8 @@ SOURCES += \
     ../../src/main.cpp \
     ../../src/menu.cpp \
     ../../src/machine_manager.cpp \
-    ../../src/window_manager.cpp
+    ../../src/window_manager.cpp \
+    ../../src/config.cpp
 
 HEADERS += \
     ../../src/curutil.h \
@@ -24,6 +29,7 @@ HEADERS += \
     ../../src/menu.h \
     ../../src/machine_manager.h \
     ../../src/window_manager.h \
-    ../../src/log.h
+    ../../src/log.h \
+    ../../src/config.h
 
 

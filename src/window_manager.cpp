@@ -3,25 +3,23 @@
 #include "machine_manager.h"
 #include "window_manager.h"
 
+using namespace omnitty;
 
 /* minimum terminal dimensions to run program */
 #define MIN_REQUIRED_WIDTH 80
 #define MIN_REQUIRED_HEIGHT 25
 
-
-#define OMNITTY_VERSION "0.4.0"
-#define REMINDER_LINE "OmNiTTY-R v" OMNITTY_VERSION \
-"  \007F1\007:menu  \006F2/3\007:sel  \003F4\007:tag" \
-"  \002F5\007:add  \001F6\007:del" \
-"  \005F7\007:mcast"
-
-
-#define SPLASH_LINE_1 "OmNiTTY Agora v" OMNITTY_VERSION
-#define SPLASH_LINE_2 "Copyright (c) 2017 AgoraLab"
-
-
-using namespace omnitty;
-
+static const std::string OMNITTY_VERSION("0.4.0");
+static const std::string SPLASH_LINE_1("OmNiTTY Agora v" + OMNITTY_VERSION);
+static const std::string SPLASH_LINE_2("Copyright (c) 2017 AgoraLab");
+static const std::string REMINDER_LINE(
+    "OmNiTTY-R v" + OMNITTY_VERSION +
+    "  \007F1\007:menu"
+    "  \006F2/3\007:sel"
+    "  \003F4\007:tag"
+    "  \002F5\007:add"
+    "  \001F6\007:del"
+    "  \005F7\007:mcast");
 
 
 OmniWindowManager::OmniWindowManager(int listWndWidth, int terminalWndWidth)
@@ -79,18 +77,18 @@ void OmniWindowManager::Init()
     LOG4CPLUS_INFO_FMT(LOGGER_NAME, "window height: %d, width: %d", h, w);
     if (h < MIN_REQUIRED_HEIGHT || w < MIN_REQUIRED_WIDTH) {
         endwin();
-        fprintf(stderr, "ERROR: omnitty requires a %d x %d terminal to run.\n",
-                MIN_REQUIRED_WIDTH, MIN_REQUIRED_HEIGHT);
+        LOG4CPLUS_ERROR_FMT(omnitty::LOGGER_NAME, "omnitty requires a %d x %d terminal to run.",
+            MIN_REQUIRED_WIDTH, MIN_REQUIRED_HEIGHT);
         exit(1);
     }
 
-    wmove(stdscr, h / 2, (w - strlen(SPLASH_LINE_1))/2);
+    wmove(stdscr, h / 2, (w - SPLASH_LINE_1.length())/2);
     CurutilAttrset(stdscr, 0x40);
-    waddstr(stdscr, SPLASH_LINE_1);
+    waddstr(stdscr, SPLASH_LINE_1.c_str());
 
     CurutilAttrset(stdscr, 0x70);
-    wmove(stdscr, h/2 + 1, (w - strlen(SPLASH_LINE_2))/2);
-    waddstr(stdscr, SPLASH_LINE_2);
+    wmove(stdscr, h/2 + 1, (w - SPLASH_LINE_2.length())/2);
+    waddstr(stdscr, SPLASH_LINE_2.c_str());
 
     wrefresh(stdscr);
     while (getch() < 0 && i < 10) i++;
@@ -129,39 +127,46 @@ void OmniWindowManager::Keypress(int key, volatile int &zombieCount)
 void OmniWindowManager::DrawWindows()
 {
     /* obtain terminal dimensions */
-    int termcols, termrows;
-    getmaxyx(stdscr, termrows, termcols);
+    int totalWidth = 0;
+    int totalHeight = 0;
+    getmaxyx(stdscr, totalHeight, totalWidth);
+    LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "get the window size, width: %d height: %d", totalWidth, totalHeight);
+
+    // reset the size
+    if (totalWidth > (m_listWndWidth + m_terminalWndWidth) * 2) {
+        m_terminalWndWidth = totalWidth * 0.618;
+    }
 
     /* the geometry is hard-coded here, but nowhere else... so I don't
      * see a lot of point using #defines or anything any more sophisticated */
     int A = m_listWndWidth + 2;
-    int C = termcols - m_terminalWndWidth;
+    int C = totalWidth - m_terminalWndWidth;
     int B = C - 1;
     if (B < A) {
         B = A;
         C = B + 1;
     }
 
-    int vtrows = termrows - 3;
-    int vtcols = termcols - C;
+    int vtrows = totalHeight - 3;
+    int vtcols = totalWidth - C;
 
     /* actually create the windows */
-    m_listWnd = newwin(termrows - 3, A - 0, 1, 0);
-    m_summaryWnd = (B - A >= 3) ? newwin(termrows-3, B - A, 1, A) : nullptr;
-    m_virtualTerminalWnd = newwin(termrows-3, vtcols, 1, C);
-    m_menu.InitMenu(termcols, termrows-1);
+    m_listWnd = newwin(totalHeight - 3, A - 0, 1, 0);
+    m_summaryWnd = (B - A >= 3) ? newwin(totalHeight-3, B - A, 1, A) : nullptr;
+    m_virtualTerminalWnd = newwin(totalHeight-3, vtcols, 1, C);
+    m_menu.InitMenu(totalWidth, totalHeight-1);
 
     /* draw the top decoration line */
     wattrset(stdscr, COLOR_PAIR(3) | A_BOLD);
     wmove(stdscr, 0, 0);
-    whline(stdscr, ACS_HLINE | A_NORMAL, termcols);
+    whline(stdscr, ACS_HLINE | A_NORMAL, totalWidth);
 
     /* draw instruction line */
     wattrset(stdscr, COLOR_PAIR(4 * 8) | A_BOLD);
-    wmove(stdscr, termrows-2, 0);
-    whline(stdscr, ' ', termcols);
-    wmove(stdscr, termrows-2, 0);
-    const char *p = REMINDER_LINE;
+    wmove(stdscr, totalHeight-2, 0);
+    whline(stdscr, ' ', totalWidth);
+    wmove(stdscr, totalHeight-2, 0);
+    const char *p = REMINDER_LINE.c_str();
     while (*p) {
         if (*p >= 0 && *p <= 7)
             wattrset(stdscr, COLOR_PAIR(4 * 8 + 7 - *p) | A_BOLD);
@@ -173,13 +178,13 @@ void OmniWindowManager::DrawWindows()
     /* draw the separator at column B */
     wattrset(stdscr, COLOR_PAIR(3) | A_BOLD);
     wmove(stdscr, 0, B);
-    wvline(stdscr, ACS_VLINE | A_NORMAL, termrows - 2);
+    wvline(stdscr, ACS_VLINE | A_NORMAL, totalHeight - 2);
     wmove(stdscr, 0, B);
     waddch(stdscr, ACS_TTEE);
     wrefresh(stdscr);
 
     /* draw window titles */
-    if (termcols > 90) {
+    if (totalWidth > 90) {
         wmove(stdscr, 0, 2);
         waddstr(stdscr, "[Machines]");
         wmove(stdscr, 0, B+2);

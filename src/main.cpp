@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include "log.h"
+#include "config.h"
 #include "window_manager.h"
 
 
@@ -26,6 +27,7 @@ void SigchldHandler(int)
 
 int main(int argc, char **argv)
 {
+    omnitty::OmniConfig::GetInstance()->LoadConfig();
     omnitty::InitLogger();
     LOG4CPLUS_INFO(omnitty::LOGGER_NAME, "Omnitty start running.");
 
@@ -71,6 +73,7 @@ int main(int argc, char **argv)
         wndMgr.Keypress(ch, ZOMBIE_MACHINE_COUNT);
     }
     
+    omnitty::OmniConfig::GetInstance()->SaveConfig();
     endwin();
     return 0;
 }

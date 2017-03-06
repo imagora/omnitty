@@ -26,7 +26,7 @@ void OmniMachineManager::AddMachine(const std::string &machineName)
 {
     if (machineName.empty()) return;
     if (m_machines.size() >= MACHINE_MAX) return;
-    m_machines.push_back(std::make_shared<OmniMachine>(machineName, m_virtualTerminalRows, m_virtualTerminalCols));
+    m_machines.push_back(std::make_shared<OmniMachine>(machineName, "", m_virtualTerminalRows, m_virtualTerminalCols));
 }
 
 

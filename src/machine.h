@@ -23,7 +23,7 @@ public:
      * @param vtRows Virtual terminal rows.
      * @param vtCols Virtual terminal Cols.
      */
-    OmniMachine(const std::string &machineName, int vtRows, int vtCols);
+    OmniMachine(const std::string &machineName, const std::string &command, int vtRows, int vtCols);
 
 
     /**

@@ -8,7 +8,7 @@ static const std::string CMD_FORMAT("/usr/bin/ssh ");
 using namespace omnitty;
 
 
-OmniMachine::OmniMachine(const std::string &machineName, int vtRows, int vtCols)
+OmniMachine::OmniMachine(const std::string &machineName, const std::string &command, int vtRows, int vtCols)
     : m_isTagged(false), m_isAlive(true), m_machineName(machineName)
 {
     m_tagStack.reserve(TAGSTACK_SIZE);

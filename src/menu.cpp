@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include "config.h"
 #include "curutil.h"
 #include "machine_manager.h"
 #include "menu.h"
@@ -122,6 +123,7 @@ void OmniMenu::ShowMenu()
         break;
     case 'q': *buf = 0;
         if (Prompt("Really quit application [y/n]?", 0x90, buf, 2) && (*buf == 'y' || *buf == 'Y')) {
+            OmniConfig::GetInstance()->SaveConfig();
             endwin();
             exit(0);
         }
