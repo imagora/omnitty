@@ -26,6 +26,12 @@ public:
 
     std::string GetCommand(const std::string &machineName);
 
+    uint32_t GetListWndWidth() const { return m_listWndWidth; }
+
+    uint32_t GetSummaryWndWidth() const { return m_summaryWndWidth; }
+
+    uint32_t GetTerminalWndWidth() const { return m_terminalWndWidth; }
+
     const std::string &GetLogFilePath() const { return m_logFilePath; }
 
     const std::string &GetLogConfigFilePath() const { return m_logConfigFilePath; }
@@ -38,15 +44,18 @@ public:
 
     const std::string &GetSshParam() const { return m_sshParam; }
 
-
 private:
     static OmniConfig   *m_instance;
+    uint32_t            m_listWndWidth;
+    uint32_t            m_summaryWndWidth;
+    uint32_t            m_terminalWndWidth;
     std::string         m_configFilePath;
     std::string         m_logFilePath;
     std::string         m_logConfigFilePath;
     std::string         m_logFormat;
     std::string         m_machineFilePath;
     std::string         m_sshUserName;
+    std::string         m_sshUserPassword;
     std::string         m_sshParam;
 };
 

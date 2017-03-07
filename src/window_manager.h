@@ -12,7 +12,7 @@ class OmniWindowManager
     typedef void (OmniWindowManager::*KeypressFuncPtr)(int, volatile int &);
 
 public:
-    OmniWindowManager(int listWndWidth, int terminalWndWidth);
+    OmniWindowManager();
 
 
     ~OmniWindowManager();
@@ -167,6 +167,7 @@ private:
 
 private:
     int                             m_listWndWidth;
+    int                             m_summaryWndWidth;
     int                             m_terminalWndWidth;
     WINDOW                          *m_listWnd;
     WINDOW                          *m_virtualTerminalWnd;

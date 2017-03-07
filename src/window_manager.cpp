@@ -21,10 +21,8 @@ static const std::string REMINDER_LINE(
     "  \001F6\007:del"
     "  \005F7\007:mcast");
 
-
-OmniWindowManager::OmniWindowManager(int listWndWidth, int terminalWndWidth)
-    : m_listWndWidth(listWndWidth), m_terminalWndWidth(terminalWndWidth),
-      m_machineMgr(std::make_shared<OmniMachineManager>()), m_menu(m_machineMgr),
+OmniWindowManager::OmniWindowManager()
+    : m_machineMgr(std::make_shared<OmniMachineManager>()), m_menu(m_machineMgr),
       m_keypressFuncPtrs{
         {KEY_F(1), &OmniWindowManager::ShowMenu},
         {KEY_F(2), &OmniWindowManager::PrevMachine},
@@ -35,6 +33,9 @@ OmniWindowManager::OmniWindowManager(int listWndWidth, int terminalWndWidth)
         {KEY_F(7), &OmniWindowManager::ToggleMulticast},
     }
 {
+    m_listWndWidth = omnitty::OmniConfig::GetInstance()->GetListWndWidth();
+    m_summaryWndWidth = omnitty::OmniConfig::GetInstance()->GetSummaryWndWidth();
+    m_terminalWndWidth = omnitty::OmniConfig::GetInstance()->GetTerminalWndWidth();
 }
 
 
@@ -133,9 +134,7 @@ void OmniWindowManager::DrawWindows()
     LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "get the window size, width: %d height: %d", totalWidth, totalHeight);
 
     // reset the size
-    if (totalWidth > (m_listWndWidth + m_terminalWndWidth) * 2) {
-        m_terminalWndWidth = totalWidth * 0.618;
-    }
+    m_terminalWndWidth = totalWidth - (m_listWndWidth + m_summaryWndWidth + 2);
 
     /* the geometry is hard-coded here, but nowhere else... so I don't
      * see a lot of point using #defines or anything any more sophisticated */
