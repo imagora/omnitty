@@ -18,3 +18,4 @@ Makefile
 librote*.dylib
 rote-config
 
+3rdparty/sshpass-1.06
