@@ -48,6 +48,22 @@ cd ../..
 
 By defalut, this will install the libROTE into `/usr/local/lib/` and copy the include files into `/usr/local/include/`.
 
+###Build sshpass
+
+Command `ssh` cannot pass password in plaintext, so there are troubles in multi-ssh login.
+
+We'd better not to use this command because it makes it too easy for novice SSH users to ruin SSH's security, and it's better to use ssh identity file instead of password. If there is a reason that must to use password, then you can install the `sshpass` command.
+
+``` sh
+cd 3rdparty/sshpass-1.06
+./configure
+make
+sudo make install
+cd ../..
+```
+
+By defalut, this will install the openssh command into `/usr/local/bin/` directory.
+
 ###Build omnitty
 
 You can build omnitty by `Qt Creator`, `XCode` or `CMake`.
