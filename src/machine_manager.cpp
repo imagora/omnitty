@@ -1,4 +1,7 @@
+#include <fstream>
 #include <algorithm>
+#include "log.h"
+#include "config.h"
 #include "curutil.h"
 #include "machine.h"
 #include "machine_manager.h"
@@ -22,11 +25,55 @@ OmniMachineManager::~OmniMachineManager()
 
 }
 
+bool OmniMachineManager::LoadMachines(const std::string &fileName)
+{
+    std::ifstream fileStream(fileName);
+    if (!fileStream.is_open()) {
+        LOG4CPLUS_ERROR_FMT(omnitty::LOGGER_NAME, "cannot open machine list file: %s", fileName.c_str());
+        return false;
+    }
+
+    std::string line;
+    std::string group("default");
+    while (std::getline(fileStream, line)) {
+        if (line[0] == '[') {
+            if (line.size() > 2) {
+                group = std::string(line, 1, line.size() - 2);
+            }
+            continue;
+        }
+        m_machineGroups[group].insert(line);
+    }
+    fileStream.close();
+    fileStream.clear();
+
+    std::for_each(m_machineGroups.begin(), m_machineGroups.end(), [&](const std::pair<MachineGroup, std::set<MachineIp>> &groups){
+        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "load [%s] machine count: %lu", groups.first.c_str(), groups.second.size());
+    });
+    return true;
+}
+
 void OmniMachineManager::AddMachine(const std::string &machineName)
 {
     if (machineName.empty()) return;
     if (m_machines.size() >= MACHINE_MAX) return;
-    m_machines.push_back(std::make_shared<OmniMachine>(machineName, "", m_virtualTerminalRows, m_virtualTerminalCols));
+    m_machines.push_back(std::make_shared<OmniMachine>(machineName,
+        OmniConfig::GetInstance()->GetCommand(machineName), m_virtualTerminalRows, m_virtualTerminalCols));
+}
+
+void OmniMachineManager::AddMachinesFromGroup(const MachineGroup &machineGroup)
+{
+    auto iter = m_machineGroups.find(machineGroup);
+    if (iter == m_machineGroups.end()) {
+        LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot find group: %s %lu", machineGroup.c_str(), machineGroup.size());
+        std::for_each(m_machineGroups.begin(), m_machineGroups.end(), [&](const std::pair<MachineGroup, std::set<MachineIp>> &groups){
+            LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "load [%s] machine count: %lu", groups.first.c_str(), groups.second.size());
+        });
+        return;
+    }
+    std::for_each(iter->second.begin(), iter->second.end(), [&](const std::string &ip){
+        AddMachine(ip);
+    });
 }
 
 

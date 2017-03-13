@@ -1,4 +1,5 @@
 #include "log.h"
+#include "config.h"
 #include "curutil.h"
 #include "machine_manager.h"
 #include "window_manager.h"
@@ -100,6 +101,14 @@ void OmniWindowManager::Init()
     DrawWindows();
 }
 
+void OmniWindowManager::LoadMachines()
+{
+    const std::string &machineFilePath = omnitty::OmniConfig::GetInstance()->GetMachineFilePath();
+    if (!machineFilePath.empty()) {
+        m_machineMgr->LoadMachines(machineFilePath);
+    }
+}
+
 
 void OmniWindowManager::UpdateAllMachines()
 {
@@ -114,14 +123,14 @@ void OmniWindowManager::HandleDeath(pid_t pid)
 }
 
 
-void OmniWindowManager::Keypress(int key, volatile int &zombieCount)
+void OmniWindowManager::Keypress(int key)
 {
     auto iter = m_keypressFuncPtrs.find(key);
     if (iter == m_keypressFuncPtrs.end()) {
-        ForwardKeypress(key, zombieCount);
+        ForwardKeypress(key);
         return;
     }
-    (this->*(iter->second))(key, zombieCount);
+    (this->*(iter->second))();
 }
 
 
@@ -313,7 +322,7 @@ void OmniWindowManager::Redraw(bool forceFullRedraw)
 }
 
 
-void OmniWindowManager::ShowMenu(int, volatile int &)
+void OmniWindowManager::ShowMenu()
 {
     m_menu.ShowMenu();
     SelectMachine();
@@ -321,91 +330,73 @@ void OmniWindowManager::ShowMenu(int, volatile int &)
 }
 
 
-void OmniWindowManager::PrevMachine(int, volatile int &)
+void OmniWindowManager::PrevMachine()
 {
     m_machineMgr->PrevMachine();
     SelectMachine();
 }
 
 
-void OmniWindowManager::NextMachine(int, volatile int &)
+void OmniWindowManager::NextMachine()
 {
     m_machineMgr->NextMachine();
     SelectMachine();
 }
 
 
-void OmniWindowManager::TagCurrent(int, volatile int &)
+void OmniWindowManager::TagCurrent()
 {
     m_machineMgr->TagCurrent();
 }
 
 
-void OmniWindowManager::AddMachine(int, volatile int &zombieCount)
+void OmniWindowManager::AddMachine()
 {
-    static char buf[32] = {0};
-    if (m_menu.Prompt("Add: ", 0xE0, buf, 32)) {
-        if (*buf == '@') {
-            AddMachinesFromFile(buf+1, zombieCount);
+    std::string buf(256, '\0');
+    if (m_menu.Prompt("Add(ip/f file/g group): ", 0xE0, &buf[0], 256)) {
+        StripString(buf);
+        std::vector<std::string> params(SplitString(buf, ' '));
+        if (params.size() == 1) {
+            m_machineMgr->AddMachine(OmniConfig::GetInstance()->GetCommand(buf));
+        } else if (params.size() == 2) {
+            if (params[0] == "f") {
+                LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from file: %s", params[1].c_str());
+                AddMachinesFromFile(params[1]);
+            } else if (params[0] == "g") {
+                LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from group: %s", params[1].c_str());
+                AddMachinesFromGroup(params[1]);
+            } else {
+                LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot parse machine param info: %s", buf.c_str());
+                return;
+            }
         } else {
-            m_machineMgr->AddMachine(buf);
+            LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot parse machine info: %s, param size: %u", buf.c_str(), static_cast<uint32_t>(params.size()));
+            return;
         }
     }
     SelectMachine();
 }
 
 
-void OmniWindowManager::AddMachinesFromFile(const std::string &file, volatile int &zombieCount)
+void OmniWindowManager::AddMachinesFromFile(const std::string &file)
 {
-    static char buf[128];
-    bool pipe = false;
-    FILE *f = nullptr;
-    if (getenv("OMNITTY_AT_COMMAND")) {
-        /* popen() a command */
-        pipe = true;
-        strcpy(buf, getenv("OMNITTY_AT_COMMAND"));
-        strcat(buf, " ");
-        strcat(buf, file.c_str());
-        strcat(buf, " 2>/dev/null");
-        f = popen(buf, "r");
-    } else {
-        f = fopen(file.c_str(), "r");
-    }
-
-    if (!f) {
-        m_menu.ShowMessageAndWait(
-                    pipe ? "Can't execute command specified by OMNITTY_AT_COMMAND" : "Can't read that file.",
-                    0xF1);
+    if (!m_machineMgr->LoadMachines(file)) {
+        m_menu.ShowMessageAndWait("Can't read that file.", 0xF1);
         return;
     }
 
-    m_menu.ShowMessageNotWait(
-                pipe ? "Adding machines supplied by command..." : "Adding machines from file...",
-                0x70);
-
-    while (1 == fscanf(f, "%s", buf)) {
-        m_machineMgr->AddMachine(buf);
-    }
-
-    if (pipe) {
-        if (0 != pclose(f)) {
-            m_menu.ShowMessageAndWait("Command given by OMNITTY_AT_COMMAND exited with error.", 0xF1);
-        }
-        /* at this point SIGCHLD will have caused zombie_count to be one more
-         * than it should, since the child command has already been reaped
-         * by pclose(). If we don't correct zombie_count, wait() will block
-         * in the main loop, since it will try to reap a zombie that does not yet
-         * exist. */
-        --zombieCount;
-    } else {
-        fclose(f);
-    }
-
-    m_menu.ShowMessageNotWait(NULL, 0x70);
+    m_menu.ShowMessageNotWait("Adding machines from file, and load group default...", 0x70);
+    AddMachinesFromGroup("default");
 }
 
 
-void OmniWindowManager::DeleteMachine(int, volatile int &)
+void OmniWindowManager::AddMachinesFromGroup(const std::string &group)
+{
+    m_machineMgr->AddMachinesFromGroup(group);
+}
+
+
+void OmniWindowManager::DeleteMachine()
 {
     static char buf[2] = {0};
 
@@ -416,14 +407,14 @@ void OmniWindowManager::DeleteMachine(int, volatile int &)
 }
 
 
-void OmniWindowManager::ToggleMulticast(int, volatile int &)
+void OmniWindowManager::ToggleMulticast()
 {
     m_machineMgr->ToggleMulticast();
     SelectMachine();
 }
 
 
-void OmniWindowManager::ForwardKeypress(int key, volatile int &)
+void OmniWindowManager::ForwardKeypress(int key)
 {
     m_machineMgr->ForwardKeypress(key);
 }
@@ -434,5 +425,27 @@ void OmniWindowManager::SelectMachine()
     int screenwidth, screenheight;
     getmaxyx(m_listWnd, screenheight, screenwidth);
     m_machineMgr->ResetSelectedMachine(screenheight);
+}
+
+
+std::vector<std::string> OmniWindowManager::SplitString(const std::string &s, char delim)
+{
+    std::vector<std::string> elems;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "%u", static_cast<uint32_t>(elems.size()));
+    return elems;
+}
+
+void OmniWindowManager::StripString(std::string &s)
+{
+    if (s.empty()) return;
+
+    s.erase(0, s.find_first_not_of(" "));
+    s.erase(s.find_last_not_of(" ") + 1);
+    s.erase(s.find_last_not_of('\0') + 1);
 }
 

@@ -93,7 +93,12 @@ bool OmniConfig::SaveConfig()
 
 std::string OmniConfig::GetCommand(const std::string &machineName)
 {
-    (void)machineName;
-    return std::string("");
+    std::string command("/usr/bin/ssh ");
+    command += m_sshParam;
+    command = command + " " + m_sshUserName + "@" + machineName;
+    if (!m_sshUserPassword.empty()) {
+        command = "/usr/local/bin/sshpass -p " + m_sshUserPassword + " " + command;
+    }
+    return command;
 }
 

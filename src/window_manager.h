@@ -9,7 +9,7 @@ namespace omnitty {
 
 class OmniWindowManager
 {
-    typedef void (OmniWindowManager::*KeypressFuncPtr)(int, volatile int &);
+    typedef void (OmniWindowManager::*KeypressFuncPtr)();
 
 public:
     OmniWindowManager();
@@ -33,6 +33,10 @@ public:
      */
     void Init();
 
+
+    void LoadMachines();
+
+
     /**
      * @brief Updates the virtual terminals of all machines.
      * @details This function should be called regularly.
@@ -53,7 +57,7 @@ public:
      * @param key the pressed key.
      * @param zombieCount used only in add machie.
      */
-    void Keypress(int key, volatile int &zombieCount);
+    void Keypress(int key);
 
 private:
     /**
@@ -116,43 +120,45 @@ private:
     /**
      * @brief ShowMenu, for F1 keypress.
      */
-    void ShowMenu(int, volatile int &);
+    void ShowMenu();
 
     /**
      * @brief Moves the selection to the previous machine, for F2 keypress.
      * @details Makes the previous machine in the list the selected machine.
      */
-    void PrevMachine(int, volatile int &);
+    void PrevMachine();
 
     /**
      * @brief Moves to the next machine, for F3 keypress.
      * @details Makes the next machine in the list the selected machine.
      */
-    void NextMachine(int, volatile int &);
+    void NextMachine();
 
     /**
      * @brief Toggles the 'tagged' state of the currently selected machine,
      *        for F4 key press.
      */
-    void TagCurrent(int, volatile int &);
+    void TagCurrent();
 
     /**
      * @brief Add machine, for F5 keypress.
      * @param zombieCount
      */
-    void AddMachine(int, volatile int &zombieCount);
+    void AddMachine();
 
-    void AddMachinesFromFile(const std::string &file, volatile int &zombieCount);
+    void AddMachinesFromFile(const std::string &file);
+
+    void AddMachinesFromGroup(const std::string &group);
 
     /**
      * @brief Delete machine, for F6 keypress.
      */
-    void DeleteMachine(int, volatile int &);
+    void DeleteMachine();
 
     /**
      * @brief Toggle multicast, for F7 keypress.
      */
-    void ToggleMulticast(int, volatile int &);
+    void ToggleMulticast();
 
     /**
      * @brief Forwards the given keypress to the appropriate machines.
@@ -161,9 +167,13 @@ private:
      *          currently selected machine.
      * @param k
      */
-    void ForwardKeypress(int key, volatile int &);
+    void ForwardKeypress(int key);
 
     void SelectMachine();
+
+    std::vector<std::string> SplitString(const std::string &s, char delim);
+
+    void StripString(std::string &s);
 
 private:
     int                             m_listWndWidth;

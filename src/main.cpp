@@ -24,6 +24,7 @@ int main(int, char **)
 
     omnitty::OmniWindowManager wndMgr;
     wndMgr.Init();
+    wndMgr.LoadMachines();
     
     pid_t chldpid;
     int ch = 0;
@@ -38,7 +39,7 @@ int main(int, char **)
 
         ch = getch();
         if (ch < 0) continue;
-        wndMgr.Keypress(ch, ZOMBIE_MACHINE_COUNT);
+        wndMgr.Keypress(ch);
     }
     
     omnitty::OmniConfig::GetInstance()->SaveConfig();

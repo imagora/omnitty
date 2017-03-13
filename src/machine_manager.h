@@ -1,4 +1,6 @@
 #pragma once
+#include <set>
+#include <map>
 #include <list>
 #include <memory>
 #include <sys/types.h>
@@ -9,8 +11,11 @@
 namespace omnitty {
 
 
-typedef std::shared_ptr<OmniMachine>    MachinePtr;
-typedef std::vector<MachinePtr>     MachineList;
+typedef std::shared_ptr<OmniMachine>                MachinePtr;
+typedef std::vector<MachinePtr>                     MachineList;
+typedef std::string                                 MachineGroup;
+typedef std::string                                 MachineIp;
+typedef std::map<MachineGroup, std::set<MachineIp>> MachineGroups;
 
 
 /**
@@ -57,6 +62,9 @@ public:
         m_virtualTerminalRows = virtualTerminalRows;
         m_virtualTerminalCols = virtualTerminalCols;
     }
+
+
+    bool LoadMachines(const std::string &fileName);
     
     
 public:
@@ -66,6 +74,9 @@ public:
      * @param machineName Machine's name.
      */
     void AddMachine(const std::string &machineName);
+
+
+    void AddMachinesFromGroup(const MachineGroup &machineGroup);
 
 
     /**
@@ -222,6 +233,7 @@ private:
     uint32_t            m_virtualTerminalRows;
     uint32_t            m_virtualTerminalCols;
     MachineList         m_machines;
+    MachineGroups       m_machineGroups;
 };
 
 
