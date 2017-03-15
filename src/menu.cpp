@@ -235,6 +235,68 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf, int len
     return decision == 1;
 }
 
+bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int len, int size)
+{
+    int sPos = 0;
+    int pos = strlen(buf[sPos]);
+    int decision = 0;
+    while (!decision) {
+        werase(m_menuWnd);
+        wmove(m_menuWnd, 0, 0);
+        CurutilAttrset(m_menuWnd, attr);
+        waddstr(m_menuWnd, prompt);
+        CurutilAttrset(m_menuWnd, 0x70);
+        waddstr(m_menuWnd, buf[sPos]);
+        wrefresh(m_menuWnd);
+
+        int ch = getch();
+        if (ch < 0) continue;
+
+        switch (ch) {
+        case 127:
+        case KEY_BACKSPACE:
+        case '\b':
+            /* bs */
+            if (pos) pos--;
+            break;
+
+        case 32:
+            ++sPos;
+            pos = strlen(buf[sPos]);
+            break;
+
+        case ('U'-'A'+1):
+            /* ^U */
+            pos = 0;
+            break;
+
+        case '\r':
+        case '\n':
+            /* Enter */
+            decision = 1;
+            break;
+
+        case ('C'-'A'+1):
+        case ('G'-'A'+1):
+        case 0x1B:
+            /* cancel */
+            decision = -1;
+            break;
+        }
+
+        if (ch >= 32 && ch != 127 && ch < 256 && pos + 1 < len) {
+            /* regular char, and we have room: put it in the buffer */
+            buf[sPos][pos++] = ch;
+        }
+
+        buf[sPos][pos] = 0;
+    }
+
+    werase(m_menuWnd);
+    wrefresh(m_menuWnd);
+    return decision == 1;
+}
+
 
 void OmniMenu::ShowMessageAndWait(const char *msg, unsigned char attr)
 {

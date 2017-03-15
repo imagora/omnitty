@@ -21,7 +21,8 @@ SOURCES += \
     ../../src/menu.cpp \
     ../../src/machine_manager.cpp \
     ../../src/window_manager.cpp \
-    ../../src/config.cpp
+    ../../src/config.cpp \
+    ../../src/opt_parser.cpp
 
 HEADERS += \
     ../../src/curutil.h \
@@ -30,6 +31,7 @@ HEADERS += \
     ../../src/machine_manager.h \
     ../../src/window_manager.h \
     ../../src/log.h \
-    ../../src/config.h
+    ../../src/config.h \
+    ../../src/opt_parser.h
 
 

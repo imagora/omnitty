@@ -1,6 +1,7 @@
 #include "log.h"
 #include "config.h"
 #include "curutil.h"
+#include "opt_parser.h"
 #include "machine_manager.h"
 #include "window_manager.h"
 
@@ -352,9 +353,28 @@ void OmniWindowManager::TagCurrent()
 
 void OmniWindowManager::AddMachine()
 {
+//    std::vector<char *> buf2;
+//    if (m_menu.Prompt("Add(ip/f file/g group): ", 0xE0, buf2, 256, 256)) {
+//        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "111111: %s", buf2[0]);
+//        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "222222: %s", buf2[1]);
+//    }
     std::string buf(256, '\0');
     if (m_menu.Prompt("Add(ip/f file/g group): ", 0xE0, &buf[0], 256)) {
         StripString(buf);
+
+        std::string machineFile;
+        std::string machineGroup;
+        IpV4Pair ipPair;
+        OmniOptParser optParser;
+        optParser.AddLongOpt("f", &machineFile);
+        optParser.AddLongOpt<std::string>("g", &machineGroup);
+        optParser.AddLongOpt<IpV4Pair>("mtr", &ipPair);
+        optParser.AddLongOpt<IpV4Pair>("traceroute", &ipPair);
+
+//        if (!optParser.ParseOpts(3, buf.c_str())) {
+//            //
+//        }
+
         std::vector<std::string> params(SplitString(buf, ' '));
         if (params.size() == 1) {
             m_machineMgr->AddMachine(OmniConfig::GetInstance()->GetCommand(buf));
