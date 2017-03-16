@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include "log.h"
 #include "config.h"
 #include "curutil.h"
 #include "machine_manager.h"
@@ -235,10 +236,9 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf, int len
     return decision == 1;
 }
 
-bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int len, int size)
+bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int argc, int &inputArgc, int argLen)
 {
-    int sPos = 0;
-    int pos = strlen(buf[sPos]);
+    int pos = strlen(buf[inputArgc]);
     int decision = 0;
     while (!decision) {
         werase(m_menuWnd);
@@ -246,7 +246,12 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int l
         CurutilAttrset(m_menuWnd, attr);
         waddstr(m_menuWnd, prompt);
         CurutilAttrset(m_menuWnd, 0x70);
-        waddstr(m_menuWnd, buf[sPos]);
+        for (int i = 0; i <= inputArgc; ++i) {
+            waddstr(m_menuWnd, buf[i]);
+            if (i + 1 <= inputArgc) {
+                waddstr(m_menuWnd, " ");
+            }
+        }
         wrefresh(m_menuWnd);
 
         int ch = getch();
@@ -261,8 +266,9 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int l
             break;
 
         case 32:
-            ++sPos;
-            pos = strlen(buf[sPos]);
+            ++inputArgc;
+            if (inputArgc >= argc) return false;
+            pos = strlen(buf[inputArgc]);
             break;
 
         case ('U'-'A'+1):
@@ -273,6 +279,7 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int l
         case '\r':
         case '\n':
             /* Enter */
+            ++inputArgc;
             decision = 1;
             break;
 
@@ -284,12 +291,10 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int l
             break;
         }
 
-        if (ch >= 32 && ch != 127 && ch < 256 && pos + 1 < len) {
+        if (ch > 32 && ch != 127 && ch < 256 && pos + 1 < argLen) {
             /* regular char, and we have room: put it in the buffer */
-            buf[sPos][pos++] = ch;
+            buf[inputArgc][pos++] = ch;
         }
-
-        buf[sPos][pos] = 0;
     }
 
     werase(m_menuWnd);

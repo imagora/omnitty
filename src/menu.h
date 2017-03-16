@@ -52,7 +52,7 @@ public:
      * any other 'cancel-key', the return value will be false.
      */
     bool Prompt(const char *prompt, unsigned char attr, char *buf, int len);
-    bool Prompt(const char *prompt, unsigned char attr, char *buf[], int len, int size);
+    bool Prompt(const char *prompt, unsigned char attr, char *buf[], int argc, int &inputArgc, int argLen);
 
 
     /**
