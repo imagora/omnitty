@@ -7,6 +7,28 @@
 using namespace omnitty;
 
 
+OmniArgsGuard::OmniArgsGuard(std::vector<char *> &argv, uint32_t argc, uint32_t argsLength)
+  : m_argv(argv)
+{
+    for (uint32_t i = 0; i < argc; ++i) {
+        char *buffer = new char[argsLength];
+        memset(buffer, '\0', argsLength);
+        m_argv.push_back(buffer);
+    }
+}
+
+OmniArgsGuard::~OmniArgsGuard()
+{
+    for (auto *p : m_argv) {
+        if (p != nullptr) {
+            delete []p;
+            p = nullptr;
+        }
+    }
+}
+
+
+
 OmniOptParser::OmniOptParser()
 {
     m_parseFuncs = {
@@ -264,4 +286,3 @@ bool OmniOptParser::ParseIpV4Pair(const OmniOptParser::OmniOptInfo &opt, const c
     }
     return true;
 }
-

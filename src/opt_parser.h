@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <vector>
 #include <string>
 #include <cstdint>
 #include <iostream>
@@ -20,6 +21,18 @@ struct IpV4 {
 
 struct MacAddr {
     uint8_t m_addr[6];
+};
+
+
+class OmniArgsGuard
+{
+public:
+    OmniArgsGuard(std::vector<char *> &argv, uint32_t argc, uint32_t argsLength);
+
+    ~OmniArgsGuard();
+
+private:
+    std::vector<char *> &m_argv;
 };
 
 
