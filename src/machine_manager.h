@@ -73,7 +73,7 @@ public:
      * @details Takes care of creating the machine and adding it to the list.
      * @param machineName Machine's name.
      */
-    void AddMachine(const std::string &machineName);
+    int AddMachine(const std::string &machineName);
 
 
     void AddMachinesFromGroup(const MachineGroup &machineGroup);
@@ -208,6 +208,9 @@ public:
      * @param p
      */
     void HandleDeath(pid_t pid);
+
+
+    void SendCommand(int machineId, const std::string &cmd);
     
 
 protected:

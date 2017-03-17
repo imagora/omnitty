@@ -53,12 +53,12 @@ bool OmniMachineManager::LoadMachines(const std::string &fileName)
     return true;
 }
 
-void OmniMachineManager::AddMachine(const std::string &machineName)
+int OmniMachineManager::AddMachine(const std::string &machineName)
 {
-    if (machineName.empty()) return;
-    if (m_machines.size() >= MACHINE_MAX) return;
+    if (machineName.empty() || m_machines.size() >= MACHINE_MAX) return 0;
     m_machines.push_back(std::make_shared<OmniMachine>(machineName,
         OmniConfig::GetInstance()->GetCommand(machineName), m_virtualTerminalRows, m_virtualTerminalCols));
+    return m_machines.size() - 1;
 }
 
 void OmniMachineManager::AddMachinesFromGroup(const MachineGroup &machineGroup)
@@ -246,6 +246,16 @@ void OmniMachineManager::HandleDeath(pid_t pid)
             rote_vt_forsake_child(machine->GetVirtualTerminal());
             break;
         }
+    }
+}
+
+void OmniMachineManager::SendCommand(int machineId, const std::string &cmd)
+{
+    if (machineId >= m_machines.size()) return;
+
+    MachinePtr &machine = m_machines[machineId];
+    for (auto ch : cmd) {
+        rote_vt_keypress(machine->GetVirtualTerminal(), ch);
     }
 }
 
