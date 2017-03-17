@@ -354,46 +354,50 @@ void OmniWindowManager::TagCurrent()
 
 void OmniWindowManager::AddMachine()
 {
-//    std::vector<char *> buf2;
-//    if (m_menu.Prompt("Add(ip/f file/g group): ", 0xE0, buf2, 256, 256)) {
-//        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "111111: %s", buf2[0]);
-//        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "222222: %s", buf2[1]);
-//    }
-    std::string buf(256, '\0');
-    if (m_menu.Prompt("Add(ip/f file/g group): ", 0xE0, &buf[0], 256)) {
-        StripString(buf);
+    int argc = 1;
+    std::vector<char *> argv;
+    OmniArgsGuard guard(argv, 10, 64);
+    if (!m_menu.Prompt("Add: ", 0xE0, &argv[0], 10, argc, 64)) {
+        LOG4CPLUS_ERROR_STR(omnitty::LOGGER_NAME, "parse input args failed");
+        return;
+    }
 
-        std::string machineFile;
-        std::string machineGroup;
-        IpV4Pair ipPair;
-        OmniOptParser optParser;
-        optParser.AddLongOpt("f", &machineFile);
-        optParser.AddLongOpt<std::string>("g", &machineGroup);
-        optParser.AddLongOpt<IpV4Pair>("mtr", &ipPair);
-        optParser.AddLongOpt<IpV4Pair>("traceroute", &ipPair);
+    memcpy(argv[0], "omnitty", 7);
+    LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "input argc: %d", argc);
+    std::string machineFile;
+    std::string machineGroup;
+    IpV4Pair ipPair;
+    OmniOptParser optParser;
+    optParser.AddLongOpt("f", &machineFile);
+    optParser.AddLongOpt<std::string>("g", &machineGroup);
+    optParser.AddLongOpt<IpV4Pair>("mtr", &ipPair);
+    optParser.AddLongOpt<IpV4Pair>("traceroute", &ipPair);
 
-//        if (!optParser.ParseOpts(3, buf.c_str())) {
-//            //
-//        }
+    if (!optParser.ParseOpts(argc, &argv[0])) {
+        m_machineMgr->AddMachine(OmniConfig::GetInstance()->GetCommand(argv[1]));
+    }
 
-        std::vector<std::string> params(SplitString(buf, ' '));
-        if (params.size() == 1) {
-            m_machineMgr->AddMachine(OmniConfig::GetInstance()->GetCommand(buf));
-        } else if (params.size() == 2) {
-            if (params[0] == "f") {
-                LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from file: %s", params[1].c_str());
-                AddMachinesFromFile(params[1]);
-            } else if (params[0] == "g") {
-                LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from group: %s", params[1].c_str());
-                AddMachinesFromGroup(params[1]);
-            } else {
-                LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot parse machine param info: %s", buf.c_str());
-                return;
-            }
-        } else {
-            LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot parse machine info: %s, param size: %u", buf.c_str(), static_cast<uint32_t>(params.size()));
-            return;
-        }
+    const std::set<std::string> &argNames = optParser.GetParsedArgNames();
+    if (argNames.find("g") != argNames.end()) {
+        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from group: %s", machineGroup.c_str());
+        AddMachinesFromGroup(machineGroup);
+    } else if (argNames.find("mtr") != argNames.end()) {
+        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from ip pair: %u %u", ipPair.first.ip, ipPair.second.ip);
+        int firstId = m_machineMgr->AddMachine(Int2Ip(ipPair.first.ip));
+        int secondId = m_machineMgr->AddMachine(Int2Ip(ipPair.second.ip));
+        std::string cmd("mtr ");
+        m_machineMgr->SendCommand(firstId, cmd + Int2Ip(ipPair.second.ip) + "\n");
+        m_machineMgr->SendCommand(secondId, cmd + Int2Ip(ipPair.first.ip) + "\n");
+    } else if (argNames.find("traceroute") != argNames.end()) {
+        LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "add machine from ip pair: %u %u", ipPair.first.ip, ipPair.second.ip);
+        int firstId = m_machineMgr->AddMachine(Int2Ip(ipPair.first.ip));
+        int secondId = m_machineMgr->AddMachine(Int2Ip(ipPair.second.ip));
+        std::string cmd("traceroute ");
+        m_machineMgr->SendCommand(firstId, cmd + Int2Ip(ipPair.second.ip) + "\n");
+        m_machineMgr->SendCommand(secondId, cmd + Int2Ip(ipPair.first.ip) + "\n");
+    } else {
+        LOG4CPLUS_WARN_STR(omnitty::LOGGER_NAME, "cannot parse args");
+        return;
     }
     SelectMachine();
 }
