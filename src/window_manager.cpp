@@ -1,4 +1,5 @@
 #include "log.h"
+#include "utils.h"
 #include "config.h"
 #include "curutil.h"
 #include "opt_parser.h"
@@ -445,27 +446,5 @@ void OmniWindowManager::SelectMachine()
     int screenwidth, screenheight;
     getmaxyx(m_listWnd, screenheight, screenwidth);
     m_machineMgr->ResetSelectedMachine(screenheight);
-}
-
-
-std::vector<std::string> OmniWindowManager::SplitString(const std::string &s, char delim)
-{
-    std::vector<std::string> elems;
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "%u", static_cast<uint32_t>(elems.size()));
-    return elems;
-}
-
-void OmniWindowManager::StripString(std::string &s)
-{
-    if (s.empty()) return;
-
-    s.erase(0, s.find_first_not_of(" "));
-    s.erase(s.find_last_not_of(" ") + 1);
-    s.erase(s.find_last_not_of('\0') + 1);
 }
 

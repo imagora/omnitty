@@ -171,10 +171,6 @@ private:
 
     void SelectMachine();
 
-    std::vector<std::string> SplitString(const std::string &s, char delim);
-
-    void StripString(std::string &s);
-
 private:
     int                             m_listWndWidth;
     int                             m_summaryWndWidth;

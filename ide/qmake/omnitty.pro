@@ -32,6 +32,7 @@ HEADERS += \
     ../../src/window_manager.h \
     ../../src/log.h \
     ../../src/config.h \
-    ../../src/opt_parser.h
+    ../../src/opt_parser.h \
+    ../../src/utils.h
 
 
