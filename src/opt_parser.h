@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <set>
 #include <vector>
 #include <string>
 #include <cstdint>
@@ -69,6 +70,8 @@ public:
 
     void PrintUsage(const char *exec_file, std::ostream &sout) const;
 
+    const std::set<std::string> &GetParsedArgNames() const { return m_parsedArgNames; }
+
 private:
     bool FillArg(const char *opt_name, const OmniOptInfo &opt, const char *optArg);
 
@@ -100,6 +103,7 @@ private:
     std::map<std::type_index, std::string>          m_typeNames;
     std::map<std::type_index, ParseFuncPtr>         m_parseFuncs;
     std::unordered_map<const char *, OmniOptInfo>   m_longOpts;
+    std::set<std::string>                           m_parsedArgNames;
 };
 
 

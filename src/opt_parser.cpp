@@ -1,6 +1,7 @@
 #include <vector>
 #include <getopt.h>
 #include "log.h"
+#include "utils.h"
 #include "opt_parser.h"
 
 
@@ -86,6 +87,7 @@ bool OmniOptParser::ParseOpts(int argc, char* const argv[])
                 optind = 0;
                 return false;
             }
+            m_parsedArgNames.insert(opt.name);
         }
     }
 
@@ -109,6 +111,7 @@ bool OmniOptParser::ParseOpts(int argc, char* const argv[])
 void OmniOptParser::Clear()
 {
     m_longOpts.clear();
+    m_parsedArgNames.clear();
 }
 
 
@@ -135,6 +138,7 @@ void OmniOptParser::PrintUsage(const char *exec_file, std::ostream &sout) const
 
 bool OmniOptParser::FillArg(const char *opt_name, const OmniOptInfo &opt, const char *optArg)
 {
+    LOG4CPLUS_ERROR_FMT(omnitty::LOGGER_NAME, "arg name %s", opt_name);
     if (opt.m_type == std::type_index(typeid(bool))) {
         return ParseBool(opt, optArg);
     }
@@ -273,14 +277,17 @@ bool OmniOptParser::ParseMacAddr(const OmniOptInfo &opt, const char *optArg)
 
 bool OmniOptParser::ParseIpV4Pair(const OmniOptParser::OmniOptInfo &opt, const char *optArg)
 {
+    std::vector<std::string> ips = SplitString(optArg, ',');
+    if (ips.size() != 2) return false;
+
     uint8_t (&a)[4] = opt.m_ipV4PairPtr->first.repr;
-    if (sscanf(optArg, "%hhu.%hhu.%hhu.%hhu", &a[0], &a[1], &a[2], &a[3]) != 4) {
+    if (sscanf(ips[0].c_str(), "%hhu.%hhu.%hhu.%hhu", &a[0], &a[1], &a[2], &a[3]) != 4) {
         LOG4CPLUS_ERROR_FMT(omnitty::LOGGER_NAME, "Illegal IP Format: %s", optArg);
         return false;
     }
 
     uint8_t (&b)[4] = opt.m_ipV4PairPtr->second.repr;
-    if (sscanf(optArg, "%hhu.%hhu.%hhu.%hhu", &b[0], &b[1], &b[2], &b[3]) != 4) {
+    if (sscanf(ips[1].c_str(), "%hhu.%hhu.%hhu.%hhu", &b[0], &b[1], &b[2], &b[3]) != 4) {
         LOG4CPLUS_ERROR_FMT(omnitty::LOGGER_NAME, "Illegal IP Format: %s", optArg);
         return false;
     }
