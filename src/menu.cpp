@@ -238,6 +238,7 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf, int len
 
 bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int argc, int &inputArgc, int argLen)
 {
+    int originArgc = inputArgc;
     int pos = strlen(buf[inputArgc]);
     int decision = 0;
     while (!decision) {
@@ -261,8 +262,16 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int a
         case 127:
         case KEY_BACKSPACE:
         case '\b':
+            LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "pos: %d", pos);
             /* bs */
-            if (pos) pos--;
+            if (pos > 0) buf[inputArgc][--pos] = '\0';
+            else {
+                buf[inputArgc][0] = '\0';
+                if (inputArgc > originArgc) {
+                  --inputArgc;
+                  pos = strlen(buf[inputArgc]);
+                }
+            }
             break;
 
         case 32:
