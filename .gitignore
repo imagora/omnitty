@@ -7,6 +7,11 @@ ide/xcode/omnitty.xcodeproj/project.xcworkspace/
 *.stash
 ide/qmake/build*/
 
+# cmake ide
+ide/cmake/.idea
+ide/cmake/cmake-build-debug
+ide/cmake/cmake-build-release
+
 # build result
 .depends
 *.o

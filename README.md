@@ -32,7 +32,11 @@ The third partys:
 * liblog4cplus
 * libjsoncpp
 
-You can get these by `brew install`.
+You can get these by `brew install`:
+
+``` sh
+brew install libncurses liblog4cplus libjsoncpp
+```
 
 ###Build libROTE
 
@@ -72,6 +76,6 @@ IDE | Path
 --- | ---
 Qt Creator | ide/qmake/omnitty.pro
 XCode | ide/xcode/omnitty.xcodeproj
-CMake | 
+CMake | ide/cmake/CMakeLists.txt
 
 
