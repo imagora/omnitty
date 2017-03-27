@@ -58,8 +58,8 @@ public:
     /**
      * @brief Displays a message in the window.
      * @details Waits for the user to acknowledge it and returns.
-     * @param msg
-     * @param attr
+     * @param msg message to show
+     * @param attr the message color
      */
     void ShowMessageAndWait(const char *msg, unsigned char attr);
 
@@ -68,8 +68,8 @@ public:
      * @brief Displays a message in the minibuffer and returns immediately.
      * @details Remember to call this function with an empty (or NULL) message
      *          to erase it.
-     * @param msg
-     * @param attr
+     * @param msg message to show
+     * @param attr the message color
      */
     void ShowMessageNotWait(const char *msg, unsigned char attr);
 

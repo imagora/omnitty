@@ -33,9 +33,6 @@ public:
      *          machine creation when you call AddMachine() for example, and it
      *          needs to pass those dimensions to the machine-creating functions
      *          (e.g. machine_new)
-     * @param listWnd The list window handler.
-     * @param vtrows The rows of the virtual terminal.
-     * @param vtcols the cols of the virtual terminal.
      */
     OmniMachineManager();
     
@@ -111,7 +108,7 @@ public:
 
     /**
      * @brief Rename the currently selected machine.
-     * @param newname
+     * @param newName new name for machine
      */
     void RenameMachine(const std::string &newName);
     
@@ -128,9 +125,9 @@ public:
 
     /**
      * @brief MakeVirtualTerminalSummary)
-     * @param rt
-     * @param summaryWidth
-     * @return
+     * @param machineIndex machine's index
+     * @param summaryWidth the summary window width
+     * @return summary
      */
     std::string MakeVirtualTerminalSummary(uint32_t machineIndex, int summaryWidth);
     
@@ -165,7 +162,7 @@ public:
      * @brief Tags all machines.
      * @details If ignore_dead, does not tag dead machines (i.e. machines whose
      *          alive flag is down).
-     * @param ignoreDead
+     * @param ignoreDead whether to ignore dead machines
      */
     void TagAll(bool ignoreDead);
 
@@ -195,7 +192,7 @@ public:
      * @details If multicast mode is on, the keypress will be forwarded to all
      *          tagged machines; otherwise, it will be directed only to the
      *          currently selected machine.
-     * @param k
+     * @param key the pressed key
      */
     void ForwardKeypress(int key);
 
@@ -205,7 +202,7 @@ public:
      * @details This will check if that PID matches the PID of the child ssh
      *          process of any of the machines registered in the manager. If so,
      *          it will mark that machine as dead.
-     * @param p
+     * @param pid the machine's pid
      */
     void HandleDeath(pid_t pid);
 
@@ -216,7 +213,7 @@ public:
 protected:
     /**
      * @brief DeleteMachineByIndex
-     * @param index
+     * @param index the machine's index
      */
     void DeleteMachineByIndex(int index);
 

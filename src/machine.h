@@ -54,42 +54,42 @@ public:
 
     /**
      * @brief IsAlive
-     * @return
+     * @return is alive
      */
     bool IsAlive() const { return m_isAlive; }
 
 
     /**
      * @brief SetIsAlive
-     * @param isAlive
+     * @param isAlive whether alive
      */
     void SetIsAlive(bool isAlive) { m_isAlive = isAlive; }
 
 
     /**
      * @brief GetPid
-     * @return
+     * @return the machine's pid
      */
     pid_t GetPid() const { return m_pid; }
 
 
     /**
      * @brief GetVirtualTerminal
-     * @return
+     * @return the machine's terminal
      */
     RoteTerm *GetVirtualTerminal() const { return m_virtualTerminal; }
 
 
     /**
      * @brief GetMachineName
-     * @return
+     * @return the machine's name
      */
     const std::string &GetMachineName() const { return m_machineName; }
 
 
     /**
      * @brief SetMachineName
-     * @param machineName
+     * @param machineName the name to set
      */
     void SetMachineName(const std::string &machineName) { m_machineName = machineName; }
 

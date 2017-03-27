@@ -174,7 +174,7 @@ void OmniMenu::UpdateCastLabel()
     }
 
     werase(m_menuWnd);
-    wmove(m_menuWnd, 0, termwidth - strlen(msg));
+    wmove(m_menuWnd, 0, termwidth - static_cast<int>(strlen(msg)));
     waddstr(m_menuWnd, msg);
 
     leaveok(m_menuWnd, TRUE);  /* prevent cursor movement */
@@ -185,7 +185,7 @@ void OmniMenu::UpdateCastLabel()
 
 bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf, int len)
 {
-    int pos = strlen(buf);
+    int pos = static_cast<int>(strlen(buf));
     int decision = 0;
     while (!decision) {
         werase(m_menuWnd);
@@ -239,7 +239,7 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf, int len
 bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int argc, int &inputArgc, int argLen)
 {
     int originArgc = inputArgc;
-    int pos = strlen(buf[inputArgc]);
+    int pos = static_cast<int>(strlen(buf[inputArgc]));
     int decision = 0;
     while (!decision) {
         werase(m_menuWnd);
@@ -269,7 +269,7 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int a
                 buf[inputArgc][0] = '\0';
                 if (inputArgc > originArgc) {
                   --inputArgc;
-                  pos = strlen(buf[inputArgc]);
+                  pos = static_cast<int>(strlen(buf[inputArgc]));
                 }
             }
             break;
@@ -277,7 +277,7 @@ bool OmniMenu::Prompt(const char *prompt, unsigned char attr, char *buf[], int a
         case 32:
             ++inputArgc;
             if (inputArgc >= argc) return false;
-            pos = strlen(buf[inputArgc]);
+            pos = static_cast<int>(strlen(buf[inputArgc]));
             break;
 
         case ('U'-'A'+1):

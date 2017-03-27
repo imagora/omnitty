@@ -86,12 +86,12 @@ void OmniWindowManager::Init()
         exit(1);
     }
 
-    wmove(stdscr, h / 2, (w - SPLASH_LINE_1.length())/2);
+    wmove(stdscr, h / 2, static_cast<int>((w - SPLASH_LINE_1.length()) / 2));
     CurutilAttrset(stdscr, 0x40);
     waddstr(stdscr, SPLASH_LINE_1.c_str());
 
     CurutilAttrset(stdscr, 0x70);
-    wmove(stdscr, h/2 + 1, (w - SPLASH_LINE_2.length())/2);
+    wmove(stdscr, h / 2 + 1, static_cast<int>((w - SPLASH_LINE_2.length()) / 2));
     waddstr(stdscr, SPLASH_LINE_2.c_str());
 
     wrefresh(stdscr);

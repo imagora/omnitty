@@ -8,7 +8,7 @@
 namespace omnitty {
 
 
-static std::vector<std::string> SplitString(const std::string &s, char delim)
+static inline std::vector<std::string> SplitString(const std::string &s, char delim)
 {
     std::vector<std::string> elems;
     std::stringstream ss(s);
@@ -20,7 +20,7 @@ static std::vector<std::string> SplitString(const std::string &s, char delim)
 }
 
 
-static void StripString(std::string &s)
+static inline void StripString(std::string &s)
 {
     if (s.empty()) return;
 
@@ -30,7 +30,7 @@ static void StripString(std::string &s)
 }
 
 
-static std::string Int2Ip(uint32_t ip)
+static inline std::string Int2Ip(uint32_t ip)
 {
     struct in_addr ipAddr;
     ipAddr.s_addr = ip;
@@ -38,7 +38,7 @@ static std::string Int2Ip(uint32_t ip)
 }
 
 
-inline uint32_t Ip2Int(const std::string& ip)
+static inline uint32_t Ip2Int(const std::string& ip)
 {
     struct sockaddr_in ipAddr;
     inet_aton(ip.c_str(), &ipAddr.sin_addr);

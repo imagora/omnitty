@@ -48,14 +48,13 @@ public:
      * @details This will check if that PID matches the PID of the child ssh
      *          process of any of the machines registered in the manager. If so,
      *          it will mark that machine as dead.
-     * @param p
+     * @param pid the pid of the machine
      */
     void HandleDeath(pid_t pid);
 
     /**
      * @brief Keypress, handle F1 - F7 and send others to terminal.
      * @param key the pressed key.
-     * @param zombieCount used only in add machie.
      */
     void Keypress(int key);
 
@@ -112,7 +111,7 @@ private:
 
     /**
      * @brief Redraw
-     * @param forceFullRedraw
+     * @param forceFullRedraw whether to force full redraw
      */
     void Redraw(bool forceFullRedraw);
 
@@ -142,7 +141,6 @@ private:
 
     /**
      * @brief Add machine, for F5 keypress.
-     * @param zombieCount
      */
     void AddMachine();
 
@@ -165,7 +163,7 @@ private:
      * @details If multicast mode is on, the keypress will be forwarded to all
      *          tagged machines; otherwise, it will be directed only to the
      *          currently selected machine.
-     * @param k
+     * @param key the pressed key
      */
     void ForwardKeypress(int key);
 

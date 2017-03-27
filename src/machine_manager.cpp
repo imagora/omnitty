@@ -58,7 +58,7 @@ int OmniMachineManager::AddMachine(const std::string &machineName)
     if (machineName.empty() || m_machines.size() >= MACHINE_MAX) return 0;
     m_machines.push_back(std::make_shared<OmniMachine>(machineName,
         OmniConfig::GetInstance()->GetCommand(machineName), m_virtualTerminalRows, m_virtualTerminalCols));
-    return m_machines.size() - 1;
+    return static_cast<int>(m_machines.size() - 1);
 }
 
 void OmniMachineManager::AddMachinesFromGroup(const MachineGroup &machineGroup)
@@ -136,7 +136,7 @@ void OmniMachineManager::ResetSelectedMachine(int height)
 {
     /* clamp m_selectedMachine to bounds */
     if (m_selectedMachine >= static_cast<int>(m_machines.size())) {
-        m_selectedMachine = m_machines.size() - 1;
+        m_selectedMachine = static_cast<int>(m_machines.size() - 1);
     }
 
     /* in particular, if machcount == 0, m_selectedMachine will be 0 */
