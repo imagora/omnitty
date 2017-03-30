@@ -11,10 +11,23 @@
 namespace omnitty {
 
 
+typedef std::string MachineGroup;
+typedef std::string MachineIp;
+typedef std::string MachineName;
+
+
+struct OmniMachineInfo
+{
+    MachineIp   m_machineIp;
+    MachineName m_machineName;
+
+    void SetMachineInfo(const std::string &infoStr);
+    bool operator<(const OmniMachineInfo &machineInfo);
+};
+
+
 typedef std::shared_ptr<OmniMachine>                MachinePtr;
 typedef std::vector<MachinePtr>                     MachineList;
-typedef std::string                                 MachineGroup;
-typedef std::string                                 MachineIp;
 typedef std::map<MachineGroup, std::set<MachineIp>> MachineGroups;
 
 
