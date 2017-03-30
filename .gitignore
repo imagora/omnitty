@@ -20,6 +20,7 @@ config.status
 Makefile
 
 # reote build result
+librote.*
 librote*.dylib
 rote-config
 
