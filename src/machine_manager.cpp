@@ -251,7 +251,7 @@ void OmniMachineManager::HandleDeath(pid_t pid)
 
 void OmniMachineManager::SendCommand(int machineId, const std::string &cmd)
 {
-    if (machineId >= m_machines.size()) return;
+    if (machineId >= static_cast<int>(m_machines.size())) return;
 
     MachinePtr &machine = m_machines[machineId];
     for (auto ch : cmd) {

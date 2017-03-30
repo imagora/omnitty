@@ -28,8 +28,8 @@ inline void InitLogger()
     log4cplus::SharedAppenderPtr appenderPtr(new log4cplus::FileAppender(logFile));
     const std::string &logFormat = OmniConfig::GetInstance()->GetLogFormat();
     if (!logFormat.empty()) {
-        std::auto_ptr<log4cplus::Layout> layoutPtr(new log4cplus::PatternLayout(logFormat));
-        appenderPtr->setLayout(layoutPtr);
+        std::unique_ptr<log4cplus::Layout> layoutPtr(new log4cplus::PatternLayout(logFormat));
+        appenderPtr->setLayout(std::move(layoutPtr));
     }
     log4cplus::Logger::getInstance(LOGGER_NAME).addAppender(appenderPtr);
 }

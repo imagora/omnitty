@@ -1,17 +1,25 @@
 TEMPLATE = app
 
 
-CONFIG += console c++11
+CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
 
-LIBS += -L/usr/local/lib -lrote -lncurses
-LIBS += -L/usr/local/Cellar/log4cplus/1.2.0/lib -llog4cplus
-LIBS += -L/usr/local/Cellar/jsoncpp/1.8.0/lib -ljsoncpp
+QMAKE_CXXFLAGS += -std=c++0x -g
+
+
+macx {
+LIBS += -L/usr/local/lib -lrote -lncurses -llog4cplus -ljsoncpp
 INCLUDEPATH += /usr/local/include/
-INCLUDEPATH += /usr/local/Cellar/log4cplus/1.2.0/include
-INCLUDEPATH += /usr/local/Cellar/jsoncpp/1.8.0/include
+}
+
+unix:!macx{
+LIBS += -L/usr/local/lib -lrote -llog4cplus
+LIBS += -L/usr/lib/x86_64-linux-gnu -lncurses -ljsoncpp
+INCLUDEPATH += /usr/include
+INCLUDEPATH += /usr/local/include
+}
 
 
 SOURCES += \
