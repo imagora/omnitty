@@ -36,21 +36,17 @@ The third partys:
 * rote
 * sshpass
 
-You can get `ncurses` by `brew install` on MacOS or `apt-get install` on Ubuntu:
+### 2.1 ncurses
 
-For MacOS:
+For MacOS, you can ignore this step, because the ncurses is system provided.
 
-``` sh
-brew install libncurses
-```
-
-For Ubuntu:
+You can get `ncurses` by `apt-get install` on Ubuntu:
 
 ``` sh
 sudo apt-get install libncurses5-dev
 ```
 
-### 2.1 Build jsoncpp
+### 2.2 Build jsoncpp
 
 Under the omnitty's root directory, get the `jsoncpp` submodule.
 
@@ -73,7 +69,7 @@ cd ../../../..
 
 By defalut, this will install the libjsoncpp into `/usr/local/lib/` and copy the include files into `/usr/local/include/`.
 
-### 2.2 Build log4cplus
+### 2.3 Build log4cplus
 
 Run command:
 
@@ -87,7 +83,7 @@ cd ../..
 
 By defalut, this will install the libjsoncpp into `/usr/local/lib/` and copy the include files into `/usr/local/include/`.
 
-### 2.3 Build rote
+### 2.4 Build rote
 
 Open your terminal, and `cd` to the omnitty.
 
@@ -101,7 +97,7 @@ cd ../..
 
 By defalut, this will install the libROTE into `/usr/local/lib/` and copy the include files into `/usr/local/include/`.
 
-### 2.4 Build sshpass
+### 2.5 Build sshpass
 
 Command `ssh` cannot pass password in plaintext, so there are troubles in multi-ssh login.
 
@@ -117,7 +113,7 @@ cd ../..
 
 By defalut, this will install the openssh command into `/usr/local/bin/` directory.
 
-### 2.5 Build omnitty
+### 2.6 Build omnitty
 
 You can build omnitty by `Qt Creator`, `XCode` or `CMake`.
 
