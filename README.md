@@ -68,7 +68,7 @@ cd build/debug
 cmake -DCMAKE_BUILD_TYPE=debug -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF -DARCHIVE_INSTALL_DIR=. -G "Unix Makefiles" ../..
 make
 sudo make install
-cd ../..
+cd ../../../..
 ```
 
 By defalut, this will install the libjsoncpp into `/usr/local/lib/` and copy the include files into `/usr/local/include/`.
@@ -82,6 +82,7 @@ cd 3rdparty/log4cplus-2.0.0-rc1
 ./configure
 make
 sudo make install
+cd ../..
 ```
 
 By defalut, this will install the libjsoncpp into `/usr/local/lib/` and copy the include files into `/usr/local/include/`.
@@ -126,4 +127,22 @@ Qt Creator | ide/qmake/omnitty.pro | ✅ | ✅
 XCode | ide/xcode/omnitty.xcodeproj | ✅ | ❎
 CMake | ide/cmake/CMakeLists.txt | ✅ | ❎
 
+**Qt Creator**
 
+``` sh
+cd ide/qmake
+qmake *.pro
+make
+```
+
+**XCode**
+
+Open `ide/omnitty.xcodeproj` and build.
+
+**Cmake**
+
+``` sh
+cd ide/cmake
+camek CMakeLists.txt
+make
+```

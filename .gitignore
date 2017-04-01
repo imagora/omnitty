@@ -18,6 +18,9 @@ ide/cmake/cmake-build-release
 config.log
 config.status
 Makefile
+ide/cmake/CMakeFiles
+CMakeCache.txt
+omnitty
 
 # reote build result
 librote.*
