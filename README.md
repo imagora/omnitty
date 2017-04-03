@@ -4,6 +4,8 @@ Copyright (c) 2017 shanhui@agora.io
 Licensed under the GNU General Public License
 See the COPYING file for more details on the license terms.
 
+You can get more informations from omnitty's [wiki](Home).
+
 ## 1 About omnitty 
 
 OMNITTY MULTIPLE-MACHINE SSH MULTIPLEXER, forked from `http://omnitty.sourceforge.net`.
