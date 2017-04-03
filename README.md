@@ -145,4 +145,10 @@ camek CMakeLists.txt
 make
 ```
 
+## 3 Donate me please
+
+If this software is helpful for you, please donate me!
+
+<img src="donate.png" width=150 height=150>
+
 [Home]: https://github.com/winking324/Omnitty/wiki/Home
