@@ -4,7 +4,7 @@ Copyright (c) 2017 shanhui@agora.io
 Licensed under the GNU General Public License
 See the COPYING file for more details on the license terms.
 
-You can get more informations from omnitty's [wiki](https://github.com/winking324/Omnitty/wiki).
+You can get more informations from omnitty's [wiki][Home].
 
 ## 1 About omnitty 
 
@@ -144,3 +144,5 @@ cd ide/cmake
 camek CMakeLists.txt
 make
 ```
+
+[Home]: https://github.com/winking324/Omnitty/wiki/Home
