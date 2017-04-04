@@ -20,6 +20,7 @@ config.status
 Makefile
 ide/cmake/CMakeFiles
 CMakeCache.txt
+cmake_install.cmake
 omnitty
 
 # reote build result
@@ -28,3 +29,4 @@ librote*.dylib
 rote-config
 
 3rdparty/sshpass-1.06
+
