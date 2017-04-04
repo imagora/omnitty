@@ -123,7 +123,7 @@ IDE | Path | Mac | Linux
 --- | --- | --- | ---
 Qt Creator | ide/qmake/omnitty.pro | ✅ | ✅
 XCode | ide/xcode/omnitty.xcodeproj | ✅ | ❎
-CMake | ide/cmake/CMakeLists.txt | ✅ | ❎
+CMake | ide/cmake/CMakeLists.txt | ✅ | ✅
 
 **Qt Creator**
 
