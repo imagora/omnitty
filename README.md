@@ -10,9 +10,9 @@ You can get more informations from omnitty's [wiki][Home].
 
 OMNITTY MULTIPLE-MACHINE SSH MULTIPLEXER, forked from `http://omnitty.sourceforge.net`.
 
-This program was written by Bruno Takahashi C. de Oliveira in C language. I rewrite it to C++ and add some new feature to it, such as build for macOS and so on.
+This program was written by Bruno Takahashi C. de Oliveira in C language. I rewrite it by C++ and add some [new features](ChangeLog) to it.
 
-Now it support **MacOS**, **Ubuntu 14.04 64bit** and above.
+Now it supports **MacOS**, **Ubuntu 14.04 64bit** and above.
 
 ### 1.1 What is it?
 
