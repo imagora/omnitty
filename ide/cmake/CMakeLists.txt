@@ -7,13 +7,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(
         /usr/local/include
-        /usr/local/Cellar/log4cplus/1.2.0/include
-        /usr/local/Cellar/jsoncpp/1.8.0/include
 )
 link_directories(
         /usr/local/lib
-        /usr/local/Cellar/log4cplus/1.2.0/lib
-        /usr/local/Cellar/jsoncpp/1.8.0/lib
 )
 link_libraries(ncurses rote log4cplus jsoncpp)
 

@@ -18,13 +18,30 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 # Copyright (c) 2002 Bruno T. C. de Oliveira
 
+#ARCH  
+ARCH="`uname -s`"
+LINUX_OS="Linux"
+MAC_OS="Darwin"
+
 SOURCES=$(wildcard *.c)
 HEADERS=$(wildcard *.h)
 
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 ROTE_VERSION=0.2.8
-ROTE_SONAME=librote.0.dylib
+
+ifeq ($(shell uname),Darwin)
+	ROTE_NAME=librote.dylib
+	ROTE_SONAME=librote.0.dylib
+	ROTE_FILETYPE=$(ROTE_VERSION).dylib
+	BUILD_PARAM=$(CC) $(CFLAGS) -dynamiclib -o $@ -Wl,-dylib_install_name -Wl,$(ROTE_SONAME) $(OBJECTS) $(LDFLAGS) $(LIBS)
+else
+	ROTE_NAME=librote.so
+	ROTE_SONAME=librote.so.0 
+	ROTE_FILETYPE=so.$(ROTE_VERSION)
+	BUILD_PARAM=$(CC) $(CFLAGS) -shared -o $@ -Wl,-soname=$(ROTE_SONAME) $(OBJECTS) $(LDFLAGS) $(LIBS)
+endif
+
 
 CC=gcc
 CFLAGS=-g -O2 -Wall -fPIC
@@ -36,16 +53,16 @@ libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 bindir=${exec_prefix}/bin
 
-all: librote.$(ROTE_VERSION).dylib
+all: librote.$(ROTE_FILETYPE)
 
 install: all
 	mkdir -p $(DESTDIR)$(includedir)/rote
 	rm -f $(DESTDIR)$(includedir)/rote/*.h
 	cp rote.h $(DESTDIR)$(includedir)/rote
 	mkdir -p $(DESTDIR)$(libdir)
-	cp librote.$(ROTE_VERSION).dylib $(DESTDIR)$(libdir)
-	cd $(DESTDIR)$(libdir) && ln -sf librote.$(ROTE_VERSION).dylib librote.dylib
-	cd $(DESTDIR)$(libdir) && ln -sf librote.$(ROTE_VERSION).dylib $(ROTE_SONAME)
+	cp librote.$(ROTE_FILETYPE) $(DESTDIR)$(libdir)
+	cd $(DESTDIR)$(libdir) && ln -sf librote.$(ROTE_FILETYPE) $(ROTE_NAME)
+	cd $(DESTDIR)$(libdir) && ln -sf librote.$(ROTE_FILETYPE) $(ROTE_SONAME)
 	chmod 755 rote-config
 	mkdir -p $(DESTDIR)$(bindir)
 	cp -p rote-config $(DESTDIR)$(bindir)
@@ -61,8 +78,8 @@ install: all
 	@echo "program (make sure $(DESTDIR)$(bindir) is in your path)."
 	@echo "-----------------------------------------------------------"
         
-librote.$(ROTE_VERSION).dylib: $(OBJECTS)
-	$(CC) $(CFLAGS) -dynamiclib -o $@ -Wl,-dylib_install_name -Wl,$(ROTE_SONAME) $(OBJECTS) $(LDFLAGS) $(LIBS)
+librote.$(ROTE_FILETYPE): $(OBJECTS)
+	$(BUILD_PARAM)
 
 .depends: $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -MM $(SOURCES) >.depends
@@ -70,7 +87,7 @@ librote.$(ROTE_VERSION).dylib: $(OBJECTS)
 -include .depends
 
 clean:
-	rm -f *.o .depends librote.*.dylib
+	rm -f *.o .depends librote.*.dylib librote.so.*
 
 pristine: clean
 	rm -rf autom4te.cache configure config.status config.log Makefile rote-config

@@ -1,5 +1,9 @@
 #include <fstream>
+#ifdef __APPLE__
 #include <json/json.h>
+#else
+#include <jsoncpp/json/json.h>
+#endif
 #include "log.h"
 #include "config.h"
 

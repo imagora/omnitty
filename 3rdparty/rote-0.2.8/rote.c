@@ -22,7 +22,11 @@ Copyright (c) 2004 Bruno T. C. de Oliveira
 #include "rote.h"
 #include "roteprivate.h"
 #include <stdlib.h>
+#ifdef __APPLE__
 #include <util.h>
+#else
+#include <pty.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 

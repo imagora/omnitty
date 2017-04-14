@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E290A2C1E937F6100A5B3ED /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E290A2B1E937F6100A5B3ED /* libjsoncpp.a */; };
+		2E290A2F1E937F8B00A5B3ED /* librote.0.2.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC958121E5039DA00677C5F /* librote.0.2.8.dylib */; };
+		2E290A311E937FDF00A5B3ED /* liblog4cplus-2.0.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E290A301E937FDF00A5B3ED /* liblog4cplus-2.0.3.dylib */; };
 		2E2F3D861E8944630019C24C /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E2F3D801E8944630019C24C /* config.cpp */; };
 		2E2F3D871E8944630019C24C /* opt_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E2F3D831E8944630019C24C /* opt_parser.cpp */; };
-		2E2F3D891E8946F10019C24C /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2F3D881E8946F10019C24C /* libjsoncpp.a */; };
-		2E2F3D8B1E89471C0019C24C /* liblog4cplus-1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2F3D8A1E89471C0019C24C /* liblog4cplus-1.2.5.dylib */; };
-		2EC958131E5039DA00677C5F /* librote.0.2.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC958121E5039DA00677C5F /* librote.0.2.8.dylib */; };
 		2EC958211E5039FD00677C5F /* curutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC958141E5039FD00677C5F /* curutil.cpp */; };
 		2EC958231E5039FD00677C5F /* machine_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC958181E5039FD00677C5F /* machine_manager.cpp */; };
 		2EC958241E5039FD00677C5F /* machine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC9581A1E5039FD00677C5F /* machine.cpp */; };
@@ -37,6 +37,9 @@
 /* Begin PBXFileReference section */
 		2E0B6E961E4C7E0F0012AA62 /* omnitty */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = omnitty; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E0B6EDD1E4C8D8C0012AA62 /* librote.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = librote.dylib; path = "../../../../../Library/Developer/Xcode/DerivedData/OmnittyForMac-dfxplqopbsclwafasgrikubqqylh/Build/Products/Debug/librote.dylib"; sourceTree = "<group>"; };
+		2E290A2B1E937F6100A5B3ED /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = ../../../../../../usr/local/lib/libjsoncpp.a; sourceTree = "<group>"; };
+		2E290A2D1E937F7B00A5B3ED /* liblog4cplus.la */ = {isa = PBXFileReference; lastKnownFileType = text; name = liblog4cplus.la; path = ../../../../../../usr/local/lib/liblog4cplus.la; sourceTree = "<group>"; };
+		2E290A301E937FDF00A5B3ED /* liblog4cplus-2.0.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "liblog4cplus-2.0.3.dylib"; path = "../../../../../../usr/local/lib/liblog4cplus-2.0.3.dylib"; sourceTree = "<group>"; };
 		2E2F3D801E8944630019C24C /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = config.cpp; path = ../../src/config.cpp; sourceTree = "<group>"; };
 		2E2F3D811E8944630019C24C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../src/config.h; sourceTree = "<group>"; };
 		2E2F3D821E8944630019C24C /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = log.h; path = ../../src/log.h; sourceTree = "<group>"; };
@@ -65,10 +68,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E2F3D8B1E89471C0019C24C /* liblog4cplus-1.2.5.dylib in Frameworks */,
-				2E2F3D891E8946F10019C24C /* libjsoncpp.a in Frameworks */,
+				2E290A311E937FDF00A5B3ED /* liblog4cplus-2.0.3.dylib in Frameworks */,
+				2E290A2F1E937F8B00A5B3ED /* librote.0.2.8.dylib in Frameworks */,
+				2E290A2C1E937F6100A5B3ED /* libjsoncpp.a in Frameworks */,
 				2EC958291E503AF700677C5F /* libncurses.tbd in Frameworks */,
-				2EC958131E5039DA00677C5F /* librote.0.2.8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +98,9 @@
 		2E0B6EB41E4C7F9D0012AA62 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2E290A301E937FDF00A5B3ED /* liblog4cplus-2.0.3.dylib */,
+				2E290A2D1E937F7B00A5B3ED /* liblog4cplus.la */,
+				2E290A2B1E937F6100A5B3ED /* libjsoncpp.a */,
 				2E2F3D8A1E89471C0019C24C /* liblog4cplus-1.2.5.dylib */,
 				2E2F3D881E8946F10019C24C /* libjsoncpp.a */,
 				2EC958281E503AF700677C5F /* libncurses.tbd */,
@@ -296,15 +302,8 @@
 				DEVELOPMENT_TEAM = 48TB6ZZL5S;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					/usr/local/Cellar/jsoncpp/1.8.0/include,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/lib,
-					/usr/local/Cellar/jsoncpp/1.8.0/lib,
-					/usr/local/Cellar/log4cplus/1.2.0/lib,
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "i386 x86_64";
@@ -320,15 +319,8 @@
 				DEVELOPMENT_TEAM = 48TB6ZZL5S;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					/usr/local/Cellar/jsoncpp/1.8.0/include,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/lib,
-					/usr/local/Cellar/jsoncpp/1.8.0/lib,
-					/usr/local/Cellar/log4cplus/1.2.0/lib,
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "i386 x86_64";

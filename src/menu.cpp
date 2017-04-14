@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include <string.h>
 #include "log.h"
 #include "config.h"
 #include "curutil.h"

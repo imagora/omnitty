@@ -1,3 +1,4 @@
+#include <string.h>
 #include "log.h"
 #include "utils.h"
 #include "config.h"

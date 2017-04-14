@@ -1,5 +1,6 @@
 #include <vector>
 #include <getopt.h>
+#include <string.h>
 #include "log.h"
 #include "utils.h"
 #include "opt_parser.h"
