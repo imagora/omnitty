@@ -37,6 +37,7 @@ public:
 
     bool IsMatchFuzzySearch(const std::string &searchInfo) const;
 
+    friend bool operator<(const OmniMachineInfo &lhv, const OmniMachineInfo &rhv);
 private:
     MachineName m_machineName;
     MachineIp   m_machineIp;
@@ -108,6 +109,9 @@ public:
      * @param machineIp Machine's ip.
      */
     int AddMachine(const std::string &machineName, const std::string &machineIp);
+
+
+    int AddMachine(const std::string &info);
 
 
     void AddMachinesFromGroup(const MachineGroup &machineGroup);

@@ -108,6 +108,15 @@ int OmniMachineManager::AddMachine(const std::string &machineName, const std::st
     return static_cast<int>(m_machines.size() - 1);
 }
 
+
+int OmniMachineManager::AddMachine(const std::string &info)
+{
+    OmniMachineInfo machineInfo;
+    machineInfo.SetMachineInfo(info);
+    AddMachine(machineInfo.GetMachineName(), machineInfo.GetMachineIp());
+}
+
+
 void OmniMachineManager::AddMachinesFromGroup(const MachineGroup &machineGroup)
 {
     std::vector<std::string> groupInfo = SplitString(machineGroup, ':');
