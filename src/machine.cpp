@@ -7,8 +7,9 @@
 using namespace omnitty;
 
 
-OmniMachine::OmniMachine(const std::string &machineName, const std::string &command, int vtRows, int vtCols)
-    : m_isTagged(false), m_isAlive(true), m_machineName(machineName)
+OmniMachine::OmniMachine(const std::string &machineName, const std::string &machineIp, const std::string &command,
+                         int vtRows, int vtCols)
+    : m_isTagged(false), m_isAlive(true), m_machineName(machineName), m_machineIp(machineIp)
 {
     m_tagStack.reserve(TAGSTACK_SIZE);
     m_virtualTerminal = rote_vt_create(vtRows, vtCols);

@@ -20,10 +20,12 @@ public:
      *          structure. The ssh runs in the RoteTerm virtual terminal, whose
      *          address is also returned in the structure.
      * @param machineName Machine name.
+     * @param machineIp Machine IP.
      * @param vtRows Virtual terminal rows.
      * @param vtCols Virtual terminal Cols.
      */
-    OmniMachine(const std::string &machineName, const std::string &command, int vtRows, int vtCols);
+    OmniMachine(const std::string &machineName, const std::string &machineIp, const std::string &command,
+                int vtRows, int vtCols);
 
 
     /**
@@ -95,6 +97,13 @@ public:
 
 
     /**
+     * @brief GetMachineIp
+     * @return the machine's ip
+     */
+    const std::string &GetMachineIp() const { return m_machineIp; }
+
+
+    /**
      * @brief Save machine's 'tagged' state.
      */
     void PushMachineTag();
@@ -118,6 +127,8 @@ private:
     RoteTerm                *m_virtualTerminal;
     /** name of the machine */
     std::string             m_machineName;
+    /** ip of the machine */
+    std::string             m_machineIp;
     /** the following stack is used for storing the 'tagged' state for later retrieval */
     std::vector<uint8_t>    m_tagStack;
 };

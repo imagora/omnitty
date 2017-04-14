@@ -1,6 +1,7 @@
 #include <fstream>
 #include <algorithm>
 #include "log.h"
+#include "utils.h"
 #include "config.h"
 #include "curutil.h"
 #include "machine.h"
@@ -11,6 +12,50 @@
 
 
 using namespace omnitty;
+
+
+OmniMachineInfo::OmniMachineInfo(const OmniMachineInfo &info)
+    : m_machineName(info.m_machineName), m_machineIp(info.m_machineIp)
+{
+}
+
+
+OmniMachineInfo::OmniMachineInfo(OmniMachineInfo &&info)
+{
+    m_machineName = std::forward<std::string>(info.m_machineName);
+    m_machineIp = std::forward<std::string>(info.m_machineIp);
+}
+
+
+OmniMachineInfo &OmniMachineInfo::operator=(OmniMachineInfo &&info)
+{
+    m_machineName = std::forward<std::string>(info.m_machineName);
+    m_machineIp = std::forward<std::string>(info.m_machineIp);
+    return *this;
+}
+
+
+bool OmniMachineInfo::SetMachineInfo(const std::string &infoStr)
+{
+    std::vector<std::string> infos = SplitString(infoStr, '=');
+    if (infos.size() > 2) {
+        LOG4CPLUS_ERROR_FMT(omnitty::LOGGER_NAME, "cannot parse machine info %s, add machine failed", infoStr.c_str());
+        return false;
+    }
+
+    if (infos.size() > 1) {
+        m_machineName = std::move(infos[0]);
+        m_machineIp = std::move(infos[1]);
+    } else {
+        m_machineIp = std::move(infos[0]);
+    }
+    return true;
+}
+
+bool OmniMachineInfo::IsMatchFuzzySearch(const std::string &searchInfo) const
+{
+    return (m_machineName.find(searchInfo) != std::string::npos);
+}
 
 
 OmniMachineManager::OmniMachineManager()
@@ -42,37 +87,63 @@ bool OmniMachineManager::LoadMachines(const std::string &fileName)
             }
             continue;
         }
-        m_machineGroups[group].insert(line);
+        OmniMachineInfo machineInfo;
+        machineInfo.SetMachineInfo(line);
+        m_machineGroups[group].insert(std::move(machineInfo));
     }
     fileStream.close();
     fileStream.clear();
 
-    std::for_each(m_machineGroups.begin(), m_machineGroups.end(), [&](const std::pair<MachineGroup, std::set<MachineIp>> &groups){
+    std::for_each(m_machineGroups.begin(), m_machineGroups.end(), [&](const MachineGroups::value_type &groups){
         LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "load [%s] machine count: %lu", groups.first.c_str(), groups.second.size());
     });
     return true;
 }
 
-int OmniMachineManager::AddMachine(const std::string &machineName)
+int OmniMachineManager::AddMachine(const std::string &machineName, const std::string &machineIp)
 {
     if (machineName.empty() || m_machines.size() >= MACHINE_MAX) return 0;
-    m_machines.push_back(std::make_shared<OmniMachine>(machineName,
-        OmniConfig::GetInstance()->GetCommand(machineName), m_virtualTerminalRows, m_virtualTerminalCols));
+    m_machines.push_back(std::make_shared<OmniMachine>(machineName, machineIp,
+        OmniConfig::GetInstance()->GetCommand(machineIp), m_virtualTerminalRows, m_virtualTerminalCols));
     return static_cast<int>(m_machines.size() - 1);
 }
 
 void OmniMachineManager::AddMachinesFromGroup(const MachineGroup &machineGroup)
 {
-    auto iter = m_machineGroups.find(machineGroup);
-    if (iter == m_machineGroups.end()) {
-        LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot find group: %s %lu", machineGroup.c_str(), machineGroup.size());
-        std::for_each(m_machineGroups.begin(), m_machineGroups.end(), [&](const std::pair<MachineGroup, std::set<MachineIp>> &groups){
-            LOG4CPLUS_INFO_FMT(omnitty::LOGGER_NAME, "load [%s] machine count: %lu", groups.first.c_str(), groups.second.size());
+    std::vector<std::string> groupInfo = SplitString(machineGroup, ':');
+
+    bool isAllGroups = (groupInfo[0].size() == 0);
+    bool isSearchByMachineName = (groupInfo.size() > 1 && groupInfo[1].size() > 0);
+
+    if (!isAllGroups) {
+        auto iter = m_machineGroups.find(groupInfo[0]);
+        if (iter == m_machineGroups.end()) {
+            LOG4CPLUS_WARN_FMT(omnitty::LOGGER_NAME, "cannot find group: %s", groupInfo[0].c_str());
+            return;
+        }
+
+        std::for_each(iter->second.begin(), iter->second.end(), [&](const OmniMachineInfo &info){
+            if (isSearchByMachineName) {
+                if (info.IsMatchFuzzySearch(groupInfo[1])) {
+                    AddMachine(info.GetMachineName(), info.GetMachineIp());
+                }
+            } else {
+                AddMachine(info.GetMachineName(), info.GetMachineIp());
+            }
         });
         return;
     }
-    std::for_each(iter->second.begin(), iter->second.end(), [&](const std::string &ip){
-        AddMachine(ip);
+
+    std::for_each(m_machineGroups.begin(), m_machineGroups.end(), [&](const MachineGroups::value_type &groups){
+        std::for_each(groups.second.begin(), groups.second.end(), [&](const OmniMachineInfo &info){
+            if (isSearchByMachineName) {
+                if (info.IsMatchFuzzySearch(groupInfo[1])) {
+                    AddMachine(info.GetMachineName(), info.GetMachineIp());
+                }
+            } else {
+                AddMachine(info.GetMachineName(), info.GetMachineIp());
+            }
+        });
     });
 }
 
@@ -266,4 +337,3 @@ void OmniMachineManager::DeleteMachineByIndex(int index)
         return;
     m_machines.erase(m_machines.begin() + index);
 }
-

@@ -16,19 +16,42 @@ typedef std::string MachineIp;
 typedef std::string MachineName;
 
 
-struct OmniMachineInfo
+class OmniMachineInfo
 {
-    MachineIp   m_machineIp;
-    MachineName m_machineName;
+public:
+    OmniMachineInfo() = default;
 
-    void SetMachineInfo(const std::string &infoStr);
-    bool operator<(const OmniMachineInfo &machineInfo);
+    OmniMachineInfo(const OmniMachineInfo &info);
+
+    OmniMachineInfo(OmniMachineInfo &&info);
+
+    ~OmniMachineInfo() = default;
+
+    OmniMachineInfo &operator=(OmniMachineInfo &&info);
+
+    const MachineName &GetMachineName() const { return m_machineName; }
+
+    const MachineIp &GetMachineIp() const { return m_machineIp; }
+
+    bool SetMachineInfo(const std::string &infoStr);
+
+    bool IsMatchFuzzySearch(const std::string &searchInfo) const;
+
+private:
+    MachineName m_machineName;
+    MachineIp   m_machineIp;
 };
 
 
-typedef std::shared_ptr<OmniMachine>                MachinePtr;
-typedef std::vector<MachinePtr>                     MachineList;
-typedef std::map<MachineGroup, std::set<MachineIp>> MachineGroups;
+inline bool operator<(const OmniMachineInfo &lhv, const OmniMachineInfo &rhv)
+{
+    return lhv.m_machineName < rhv.m_machineName ||
+        (!(lhv.m_machineName < rhv.m_machineName) && lhv.m_machineIp < rhv.m_machineIp);
+}
+
+typedef std::shared_ptr<OmniMachine>                      MachinePtr;
+typedef std::vector<MachinePtr>                           MachineList;
+typedef std::map<MachineGroup, std::set<OmniMachineInfo>> MachineGroups;
 
 
 /**
@@ -82,8 +105,9 @@ public:
      * @brief Adds a new machine to the machine manager given its name.
      * @details Takes care of creating the machine and adding it to the list.
      * @param machineName Machine's name.
+     * @param machineIp Machine's ip.
      */
-    int AddMachine(const std::string &machineName);
+    int AddMachine(const std::string &machineName, const std::string &machineIp);
 
 
     void AddMachinesFromGroup(const MachineGroup &machineGroup);
