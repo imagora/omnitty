@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <rote/rote.h>
+#include "utils.h"
 
 
 namespace omnitty {
@@ -86,7 +87,9 @@ public:
      * @brief GetMachineName
      * @return the machine's name
      */
-    const std::string &GetMachineName() const { return m_machineName; }
+    std::string GetMachineName() const {
+      return m_machineName.empty()?m_machineIp:(m_machineName + IpLastByte(m_machineIp));
+    }
 
 
     /**

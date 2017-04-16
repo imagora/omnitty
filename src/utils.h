@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <sstream>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
@@ -38,11 +39,17 @@ static inline std::string Int2Ip(uint32_t ip)
 }
 
 
-static inline uint32_t Ip2Int(const std::string& ip)
+static inline uint32_t Ip2Int(const std::string &ip)
 {
     struct sockaddr_in ipAddr;
     inet_aton(ip.c_str(), &ipAddr.sin_addr);
     return ipAddr.sin_addr.s_addr;
+}
+
+
+static inline std::string IpLastByte(const std::string &ip)
+{
+    return ip.substr(ip.find_last_of('.') + 1);
 }
 
 

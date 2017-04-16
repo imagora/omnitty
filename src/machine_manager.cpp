@@ -102,7 +102,7 @@ bool OmniMachineManager::LoadMachines(const std::string &fileName)
 
 int OmniMachineManager::AddMachine(const std::string &machineName, const std::string &machineIp)
 {
-    if (machineName.empty() || m_machines.size() >= MACHINE_MAX) return 0;
+    if (machineIp.empty() || m_machines.size() >= MACHINE_MAX) return 0;
     m_machines.push_back(std::make_shared<OmniMachine>(machineName, machineIp,
         OmniConfig::GetInstance()->GetCommand(machineIp), m_virtualTerminalRows, m_virtualTerminalCols));
     return static_cast<int>(m_machines.size() - 1);
@@ -113,7 +113,7 @@ int OmniMachineManager::AddMachine(const std::string &info)
 {
     OmniMachineInfo machineInfo;
     machineInfo.SetMachineInfo(info);
-    AddMachine(machineInfo.GetMachineName(), machineInfo.GetMachineIp());
+    return AddMachine(machineInfo.GetMachineName(), machineInfo.GetMachineIp());
 }
 
 
