@@ -81,6 +81,8 @@ bool OmniMachineManager::LoadMachines(const std::string &fileName)
     std::string line;
     std::string group("default");
     while (std::getline(fileStream, line)) {
+        if (line.empty()) continue;
+
         if (line[0] == '[') {
             if (line.size() > 2) {
                 group = std::string(line, 1, line.size() - 2);
