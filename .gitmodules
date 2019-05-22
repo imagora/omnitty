@@ -1,3 +1,6 @@
 [submodule "3rdparty/jsoncpp"]
 	path = 3rdparty/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "3rdparty/libvterm"]
+	path = 3rdparty/libvterm
+	url = https://github.com/TragicWarrior/libvterm.git
