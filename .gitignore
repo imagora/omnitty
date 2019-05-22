@@ -28,5 +28,5 @@ librote.*
 librote*.dylib
 rote-config
 
-3rdparty/sshpass-1.06
-
+# third party build result
+3rdparty/
